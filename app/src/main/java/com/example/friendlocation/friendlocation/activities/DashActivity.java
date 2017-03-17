@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.example.friendlocation.friendlocation.R;
 import com.example.friendlocation.friendlocation.fragments.FriendListFragment;
+import com.example.friendlocation.friendlocation.fragments.MFragment;
 
 public class DashActivity extends AppCompatActivity {
 
@@ -37,7 +38,7 @@ public class DashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dash);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+       // setSupportActionBar(toolbar);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
@@ -107,7 +108,7 @@ public class DashActivity extends AppCompatActivity {
                 case 0:
                     return new FriendListFragment();
                 case 1:
-                    return new PlaceholderFragment().newInstance(1);
+                    return new MFragment();
                 case 2:
                     return new PlaceholderFragment().newInstance(2);
                 default:

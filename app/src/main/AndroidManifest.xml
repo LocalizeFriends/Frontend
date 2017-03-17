@@ -29,16 +29,14 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.DashActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
-        <activity android:name=".activities.DashboardActivity" />
-        <activity
-            android:name=".activities.DashActivity"
-            android:label="@string/title_activity_dash"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAquCh7OJmiJWyXVlE7MymA168S4Jkpq1Y" />
     </application>
 
 </manifest>
