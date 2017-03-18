@@ -1,6 +1,6 @@
 package com.example.friendlocation.friendlocation.fragments;
 
-
+import com.example.friendlocation.friendlocation.PathDrawing.*;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,36 +10,30 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.friendlocation.friendlocation.API;
+import com.example.friendlocation.friendlocation.API.API;
 import com.example.friendlocation.friendlocation.ApiCall;
 import com.example.friendlocation.friendlocation.R;
 import com.facebook.AccessToken;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.SupportMapFragment;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,7 +50,6 @@ import retrofit2.Response;
     private ArrayList<MarkerOptions> markers;
     final private int MY_REQUEST_FINE_LOCATION = 124;
     final private int MY_REQUEST_COARSE_LOCATION = 125;
-    LocationServices l;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     GoogleMap mGoogleMap;
@@ -119,6 +112,10 @@ import retrofit2.Response;
                         new LatLng(point.latitude, point.longitude)).title("New Marker");
                 m = mGoogleMap.addMarker(marker);
 
+                String url = getMapsApiDirectionsUrl(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), m.getPosition());
+                ReadTask downloadTask = new ReadTask(mGoogleMap);
+                // Start downloading json data from Google Directions API
+                downloadTask.execute(url);
             }
         });
     }
@@ -127,36 +124,61 @@ import retrofit2.Response;
     public void onLocationChanged(Location location) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-
-        if (mLastLocation != null) {
-            Toast.makeText(getActivity(), "MyLocation button clicked," + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(17)                   // Sets the zoom
-                    .tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            String s = ""+mLastLocation.getLatitude();
-
-            //mLastLocation
-            ApiCall sample = new ApiCall(token.getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
-            Call<ApiCall> query = apiInterface.sendApiCall(sample);
-            query.enqueue(new Callback<ApiCall>() {
-                @Override
-                public void onResponse(Call<ApiCall> call, Response<ApiCall> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(getActivity(), "Correct sending to api", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ApiCall> call, Throwable t) {
-                    Toast.makeText(getActivity(), "Incorrect sending to api", Toast.LENGTH_SHORT).show();
-                }
-            });
+        if(mLastLocation!= null) {
+            zoomCamera(17,30);
+            ApiCall myLocation = new ApiCall(token.getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
+            sendApiCall(myLocation);
         }
     }
+    void zoomCamera(int zoom, int tilt){
+        Toast.makeText(getActivity(), "MyLocation button clicked," + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))      // Sets the center of the map to location user
+                .zoom(zoom)                   // Sets the zoom
+                .tilt(tilt)                   // Sets the tilt of the camera to 30 degrees
+                .build();                   // Creates a CameraPosition from the builder
+        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
 
+        private String  getMapsApiDirectionsUrl(LatLng origin,LatLng dest) {
+            // Origin of route
+            String str_origin = "origin="+origin.latitude+","+origin.longitude;
+
+            // Destination of route
+            String str_dest = "destination="+dest.latitude+","+dest.longitude;
+
+            // Sensor enabled
+            String sensor = "sensor=false";
+
+            // Building the parameters to the web service
+            String parameters = str_origin+"&"+str_dest+"&"+sensor;
+
+            // Output format
+            String output = "json";
+
+            // Building the url to the web service
+            String url = "https://maps.googleapis.com/maps/api/directions/"+output+"?"+parameters;
+
+            return url;
+        }
+
+    void sendApiCall(ApiCall myLocation){
+
+        Call<ApiCall> query = apiInterface.sendApiCall(myLocation);
+        query.enqueue(new Callback<ApiCall>() {
+            @Override
+            public void onResponse(Call<ApiCall> call, Response<ApiCall> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getActivity(), "Correct sending to api", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiCall> call, Throwable t) {
+                Toast.makeText(getActivity(), "Incorrect sending to api", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
