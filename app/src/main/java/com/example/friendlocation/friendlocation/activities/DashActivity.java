@@ -28,7 +28,6 @@ public class DashActivity extends AppCompatActivity {
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.container) ViewPager mViewPager;
     @BindView(R.id.tabs) TabLayout tabLayout;
 
@@ -106,9 +105,9 @@ public class DashActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch(position){
                 case 0:
-                    return new FriendListFragment();
+                    return new  MFragment();
                 case 1:
-                    return new MFragment();
+                    return new FriendListFragment();
                 case 2:
                     return new PlaceholderFragment().newInstance(2);
                 default:
