@@ -1,7 +1,6 @@
 package com.example.friendlocation.friendlocation.PathDrawing;
 
 import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +26,6 @@ public class MapHttpConnection {
             }
             data = sb.toString();
             br.close();
-
-
         }
         catch (Exception e) {
             Log.d("Exception reading url", e.toString());
@@ -37,6 +34,5 @@ public class MapHttpConnection {
             urlConnection.disconnect();
         }
         return data;
-
     }
 }

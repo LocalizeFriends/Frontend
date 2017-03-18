@@ -38,14 +38,11 @@ public class PathJSONParser {
                     }
                     routes.add(path);
                 }
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
         return routes;
-
     }
 
     private List<LatLng> decodePoly(String encoded) {

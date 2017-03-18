@@ -14,15 +14,11 @@ public class ReadTask extends AsyncTask<String, Void , String> {
 
     @Override
     protected String doInBackground(String... url) {
-        // TODO Auto-generated method stub
         String data = "";
         try {
             MapHttpConnection http = new MapHttpConnection();
             data = http.readUr(url[0]);
-
-
         } catch (Exception e) {
-            // TODO: handle exception
             Log.d("Background Task", e.toString());
         }
         return data;
@@ -33,5 +29,4 @@ public class ReadTask extends AsyncTask<String, Void , String> {
         super.onPostExecute(result);
         new ParserTask(googleMap).execute(result);
     }
-
 }
