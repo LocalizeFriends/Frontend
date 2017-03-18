@@ -33,6 +33,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.SupportMapFragment;
 
@@ -63,6 +64,7 @@ import retrofit2.Response;
     SupportMapFragment supportMapFragment;
     API.APIInterface apiInterface;
     AccessToken token;
+    Marker m;
 
     public MFragment() {
         // Required empty public constructor
@@ -104,6 +106,21 @@ import retrofit2.Response;
         } else {
             // Show rationale and request permission.
         }
+
+        mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng point) {
+                if(m != null){
+                    m.remove(); //We allow only one marker.
+                }
+
+                MarkerOptions marker = new MarkerOptions().position(
+                        new LatLng(point.latitude, point.longitude)).title("New Marker");
+                m = mGoogleMap.addMarker(marker);
+
+            }
+        });
     }
 
     @Override
