@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -93,10 +95,25 @@ import java.util.List;
         return inflater.inflate(R.layout.fragment_m, container, false);
     }
 
+        @Override
+        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            FragmentManager fm = getChildFragmentManager();
+            SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentByTag("mapFragment");
+            if (mapFragment == null) {
+                mapFragment = new SupportMapFragment();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.add(R.id.map_container, mapFragment, "mapFragment");
+                ft.commit();
+                fm.executePendingTransactions();
+            }
+            mapFragment.getMapAsync(this);
+        }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        grantPermission();
+
         //getMeetings()
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -265,9 +282,11 @@ import java.util.List;
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_REQUEST_FINE_LOCATION);
         }
-
+        grantPermission();
+        /*
         supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);
+        */
     }
 
     @Override
