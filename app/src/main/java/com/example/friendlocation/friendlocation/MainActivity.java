@@ -3,6 +3,7 @@ package com.example.friendlocation.friendlocation;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.friendlocation.friendlocation.activities.DashActivity;
@@ -16,6 +17,9 @@ import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+
+import org.json.JSONObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -33,18 +37,19 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         callbackManager = CallbackManager.Factory.create();
-        loginButton.setReadPermissions("email", "read_custom_friendlists");
+        loginButton.setReadPermissions("public_profile","email", "read_custom_friendlists");
 
         AccessToken token = AccessToken.getCurrentAccessToken();
         if(token!= null){
             t.setText(token.getToken() +"\n" +
                     token.getUserId());
-            user_id= token.getUserId();
+            user_id = token.getUserId();
             startActivity(new Intent(getBaseContext(), DashActivity.class));
         }
         else {
-        logIn();
+            logIn();
         }
+        getUserInformation(token);
         getFriends();
     }
 
@@ -60,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onSuccess(LoginResult loginResult) {
                     // App code
                     t.setText(loginResult.getAccessToken().getToken() +
-                            loginResult.getAccessToken().getUserId());
+                            loginResult.getAccessToken().getUserId()
+                            );
                     startActivity(new Intent(getBaseContext(), DashActivity.class));
                 }
 
@@ -76,6 +82,19 @@ public class MainActivity extends AppCompatActivity {
             });
     }
 
+    public void getUserInformation(AccessToken token){
+        GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                Log.i("LoginActivity", response.toString());
+            }
+        });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, first_name, last_name, email, gender, birthday, location");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
     public void getFriends(){
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -88,6 +107,5 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         ).executeAsync();
-
     }
 }
