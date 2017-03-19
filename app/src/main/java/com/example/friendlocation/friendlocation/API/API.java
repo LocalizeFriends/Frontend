@@ -52,8 +52,6 @@ public class API {
 
         @POST("/api/location")
         Call<ApiCall> sendApiCall(@Body ApiCall apiCallWithLatLong);
-
-
     }
 }
 

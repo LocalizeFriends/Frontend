@@ -2,9 +2,8 @@ package com.example.friendlocation.friendlocation.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.StrictMode;
 import android.support.v4.app.ListFragment;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -69,9 +70,7 @@ public class FriendListFragment extends ListFragment {
     }
 
     public void populateFriendList(){
-        friendsList = new ArrayList<>();
-        friendsList.add(new Friend(123,"bartek"));
-        friendsList.add(new Friend(124,"NieBartek"));
+        friendsList = getFriends();
     }
 
     public void getUserInformation(AccessToken token){
@@ -87,17 +86,37 @@ public class FriendListFragment extends ListFragment {
         request.executeAsync();
     }
 
-    public void getFriends(){
-        new GraphRequest(
+    public List<Friend> getFriends(){
+        List<Friend> friends = new ArrayList<>();
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                .permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        JSONObject rs = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/" + token.getUserId() +"/friends",
                 null,
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        response.getJSONArray();
+                        //rs.put( response.getJSONObject());
                     }
                 }
-        ).executeAsync();
+        ).executeAndWait().getJSONObject();
+
+        JSONArray friendsData = null;
+        try {
+            friendsData = rs.getJSONArray("data");
+            for (int i = 0; i < friendsData.length(); i++) {
+                JSONObject friend = friendsData.getJSONObject(i);
+                double friendId = friend.getDouble("id");
+                String friendName = friend.getString("name");
+                friends.add(new Friend( friendId,friendName));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return friends;
     }
 }
