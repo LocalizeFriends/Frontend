@@ -1,5 +1,7 @@
 package com.example.friendlocation.friendlocation.fragments;
 
+import com.example.friendlocation.friendlocation.Adapters.FriendsListAdapter;
+import com.example.friendlocation.friendlocation.JavaClasses.Friend;
 import com.example.friendlocation.friendlocation.PathDrawing.*;
 import android.Manifest;
 import android.app.Dialog;
@@ -17,6 +19,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -41,6 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,6 +70,7 @@ import retrofit2.Response;
     AccessToken token;
     static Marker meetingMarker;
     private final Calendar mcurrentTime = Calendar.getInstance();
+    private ArrayList<String> friendList;
 
     public MFragment() {
         // Required empty public constructor
@@ -124,7 +129,8 @@ import retrofit2.Response;
         builder.setMessage("Czy chcesz utworzyć spotkanie?");
         builder.setPositiveButton("Akceptuj", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                setMeetingName();
+                //setMeetingName();
+                setAttendes();
             }
         });
         builder.setNegativeButton("Odrzuć", new DialogInterface.OnClickListener() {
@@ -169,6 +175,41 @@ import retrofit2.Response;
     }
 
     void setAttendes(){
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        final ArrayAdapter<Friend> adapter = getPossibleAttendees();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                long strName = adapter.getItemId(which);
+                AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
+                builderInner.setMessage(""+strName);
+                builderInner.setTitle("Your Selected Item is");
+                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog,int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builderInner.show();
+            }
+        });
+
+        builder.show();
+    }
+
+    ArrayAdapter<Friend> getPossibleAttendees(){
+        List<Friend> friendsList = new ArrayList<>();
+        friendsList.add(new Friend(1,"Hardik"));
+        friendsList.add(new Friend(2,"Jignesh"));
+        ArrayAdapter<Friend> adapter = new FriendsListAdapter(this.getActivity(), friendsList);
+
+        return adapter;
+    }
+
+    void getFriendsInformations(){
 
     }
 
