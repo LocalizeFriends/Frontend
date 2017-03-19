@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             logIn();
         }
-        getUserInformation(token);
-        getFriends();
     }
 
     @Override
@@ -82,30 +80,4 @@ public class MainActivity extends AppCompatActivity {
             });
     }
 
-    public void getUserInformation(AccessToken token){
-        GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
-            @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                Log.i("LoginActivity", response.toString());
-            }
-        });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, first_name, last_name, email, gender, birthday, location");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    public void getFriends(){
-        new GraphRequest(
-                AccessToken.getCurrentAccessToken(),
-                "/" + user_id +"/friends",
-                null,
-                HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    public void onCompleted(GraphResponse response) {
-                        response.getJSONArray();
-                    }
-                }
-        ).executeAsync();
-    }
 }
