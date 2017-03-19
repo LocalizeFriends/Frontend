@@ -3,6 +3,7 @@ package com.example.friendlocation.friendlocation.fragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.Bundle;
@@ -93,17 +94,19 @@ public class FriendListFragment extends ListFragment {
         request.executeAsync();
     }
 
-    public List<Friend> getFriends(){
+    static public List<Friend> getFriends(){
         List<Friend> friends = new ArrayList<>();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, name, email, picture.type(large)");
 
         JSONObject rs = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/" + token.getUserId() +"/friends",
-                null,
+                "/" + AccessToken.getCurrentAccessToken().getUserId() +"/friends",
+                parameters,
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
@@ -116,25 +119,20 @@ public class FriendListFragment extends ListFragment {
         try {
             friendsData = rs.getJSONArray("data");
             for (int i = 0; i < friendsData.length(); i++) {
-                JSONObject friend = friendsData.getJSONObject(i);
-                String friendId = friend.getString("id");
-                String friendName = friend.getString("name");
-                friends.add(new Friend(friendId,friendName));
+                JSONObject friendJson = friendsData.getJSONObject(i);
 
-                /*
-                URL profilePicUrl = new URL(friend.getJSONObject("picture").getJSONObject("data").getString("url"));
+                URL profilePicUrl = new URL(friendJson.getJSONObject("picture").getJSONObject("data").getString("url"));
                 Bitmap profilePic= BitmapFactory.decodeStream(profilePicUrl.openConnection().getInputStream());
-                ImageView v1 = new ImageView(getContext());
-                v1.setImageBitmap(profilePic);*/
-                //friends.add(new Friend( friendId,friendName,v1.getDrawable()));
+
+                friends.add(new Friend( friendJson.getString("id"),friendJson.getString("name"),new BitmapDrawable(profilePic)));
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            /*
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();*/
+            e.printStackTrace();
         }
         return friends;
     }

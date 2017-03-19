@@ -129,8 +129,8 @@ import retrofit2.Response;
         builder.setMessage("Czy chcesz utworzyć spotkanie?");
         builder.setPositiveButton("Akceptuj", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                //setMeetingName();
-                setAttendes();
+                setMeetingName();
+
             }
         });
         builder.setNegativeButton("Odrzuć", new DialogInterface.OnClickListener() {
@@ -168,13 +168,14 @@ import retrofit2.Response;
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 meetingMarker.setTitle(meetingMarker.getTitle() + " - " + String.format("%02d:%02d",selectedHour,selectedMinute));
+                setAttendees();
             }
         }, hour, minute, true);//Yes 24 hour time
         mTimePicker.setTitle("Select Time");
         mTimePicker.show();
     }
 
-    void setAttendes(){
+    void setAttendees(){
         final LayoutInflater inflater = getActivity().getLayoutInflater();
 
         final ArrayAdapter<Friend> adapter = getPossibleAttendees();
@@ -192,16 +193,10 @@ import retrofit2.Response;
     }
 
     ArrayAdapter<Friend> getPossibleAttendees(){
-        List<Friend> friendsList = new ArrayList<>();
-        friendsList.add(new Friend("1","Hardik"));
-        friendsList.add(new Friend("2","Jignesh"));
+        List<Friend> friendsList = FriendListFragment.getFriends();
         ArrayAdapter<Friend> adapter = new FriendsListAdapter(this.getActivity(), friendsList);
 
         return adapter;
-    }
-
-    void getFriendsInformations(){
-
     }
 
     void grantPermission(){

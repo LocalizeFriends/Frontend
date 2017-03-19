@@ -1,6 +1,7 @@
 package com.example.friendlocation.friendlocation.API;
 
 import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
+import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -14,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public class API {
@@ -52,6 +54,9 @@ public class API {
 
         @POST("/api/location")
         Call<ApiCall> sendApiCall(@Body ApiCall apiCallWithLatLong);
+
+        @GET("/api/location")
+        Call<Meeting> getMeetings(@Body Meeting meeting);
     }
 }
 

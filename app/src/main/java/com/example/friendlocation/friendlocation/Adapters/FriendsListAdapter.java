@@ -42,7 +42,7 @@ public class FriendsListAdapter extends ArrayAdapter<Friend> {
             view = inflator.inflate(R.layout.friend_row, null);
             final ViewHolder viewHolder = new ViewHolder();
             viewHolder.name = (TextView) view.findViewById(R.id.friendName);
-            //viewHolder.avatar = (ImageView) view.findViewById(R.id.friendImg);
+            viewHolder.avatar = (ImageView) view.findViewById(R.id.friendImg);
             view.setTag(viewHolder);
         } else {
             view = convertView;
@@ -50,7 +50,7 @@ public class FriendsListAdapter extends ArrayAdapter<Friend> {
 
         ViewHolder holder = (ViewHolder) view.getTag();
         holder.name.setText(list.get(position).getName());
-        //holder.avatar.setImageDrawable(list.get(position).getAvatar());
+        holder.avatar.setImageDrawable(list.get(position).getAvatar());
         return view;
     }
 }
