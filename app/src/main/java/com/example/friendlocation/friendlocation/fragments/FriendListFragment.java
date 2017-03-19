@@ -78,7 +78,8 @@ public class FriendListFragment extends ListFragment {
     }
 
     public void populateFriendList(){
-        friendsList = getFriends();
+        if(friendsList == null)
+            friendsList = getFriends();
     }
 
     public void getUserInformation(AccessToken token){

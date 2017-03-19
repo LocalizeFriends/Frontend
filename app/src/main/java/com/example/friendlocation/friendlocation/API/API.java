@@ -54,6 +54,8 @@ public class API {
 
         @POST("/api/location")
         Call<ApiCall> sendApiCall(@Body ApiCall apiCallWithLatLong);
+        @POST("/api/meeting")
+        Call<Meeting> sendMeeting(@Body Meeting meeting);
 
         @GET("/api/location")
         Call<Meeting> getMeetings(@Body Meeting meeting);

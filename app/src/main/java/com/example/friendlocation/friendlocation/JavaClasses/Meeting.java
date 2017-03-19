@@ -1,33 +1,47 @@
 package com.example.friendlocation.friendlocation.JavaClasses;
 
-import java.util.Timer;
-
-/**
- * Created by barte_000 on 19.03.2017.
- */
-
+import java.util.ArrayList;
+import java.util.List;
 public class Meeting {
-
-    int user_id;
+    String user_id;
     String name;
     double lat;
     double lng;
-    Timer time;
+    String time;
+    List<MeetingAttender> attendersList;
 
-    public Meeting(int user_id, String name, double lat, double lng, Timer time) {
+    public Meeting(String user_id, String name, double lat, double lng, String time, List<MeetingAttender> attendersList) {
         this.user_id = user_id;
         this.name = name;
         this.lat = lat;
         this.lng = lng;
         this.time = time;
+        this.attendersList = attendersList;
     }
 
-    public int getUser_id() {
+    public Meeting() {
+    }
+
+    public List<MeetingAttender> getAttendersList() {
+        return attendersList;
+    }
+
+    public void addAttendeeToList(MeetingAttender attender) {
+        if(attendersList == null)
+            attendersList = new ArrayList<>();
+        attendersList.add(attender);
+    }
+
+    public void setAttendersList(List<MeetingAttender> attendersList) {
+        this.attendersList = attendersList;
+    }
+
+    public String getUser_id() {
 
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
 
@@ -55,11 +69,11 @@ public class Meeting {
         this.lng = lng;
     }
 
-    public Timer getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Timer time) {
+    public void setTime(String time) {
         this.time = time;
     }
 }

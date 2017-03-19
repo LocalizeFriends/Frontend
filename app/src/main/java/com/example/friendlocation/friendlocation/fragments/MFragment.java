@@ -2,6 +2,8 @@ package com.example.friendlocation.friendlocation.fragments;
 
 import com.example.friendlocation.friendlocation.Adapters.FriendsListAdapter;
 import com.example.friendlocation.friendlocation.JavaClasses.Friend;
+import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
+import com.example.friendlocation.friendlocation.JavaClasses.MeetingAttender;
 import com.example.friendlocation.friendlocation.PathDrawing.*;
 import android.Manifest;
 import android.app.Dialog;
@@ -42,6 +44,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -70,7 +73,8 @@ import retrofit2.Response;
     AccessToken token;
     static Marker meetingMarker;
     private final Calendar mcurrentTime = Calendar.getInstance();
-    private ArrayList<String> friendList;
+    private List<Friend> friendList;
+    static Meeting meeting;
 
     public MFragment() {
         // Required empty public constructor
@@ -102,13 +106,17 @@ import retrofit2.Response;
                 if(meetingMarker != null){
                     meetingMarker.remove(); //We allow only one marker.
                 }
+
                 //Add marker
                 MarkerOptions marker = new MarkerOptions().position(
                         new LatLng(point.latitude, point.longitude)).title("");
                 meetingMarker = mGoogleMap.addMarker(marker);
 
+                meeting = new Meeting();
                 drawDialogs(); // Draw ac -> name -> time;
                 meetingMarker.showInfoWindow();
+
+
 
                 drawPath();
             }
@@ -130,7 +138,6 @@ import retrofit2.Response;
         builder.setPositiveButton("Akceptuj", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 setMeetingName();
-
             }
         });
         builder.setNegativeButton("Odrzuć", new DialogInterface.OnClickListener() {
@@ -152,6 +159,7 @@ import retrofit2.Response;
                 Dialog f = (Dialog) dialog;
                 EditText inputTemp = (EditText) f.findViewById(R.id.MeetingName);
                 meetingMarker.setTitle(inputTemp.getText().toString());
+                meeting.setName(inputTemp.getText().toString());
                 setMeetingTime();
             }
         });
@@ -168,6 +176,7 @@ import retrofit2.Response;
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 meetingMarker.setTitle(meetingMarker.getTitle() + " - " + String.format("%02d:%02d",selectedHour,selectedMinute));
+                meeting.setTime(String.format("%02d:%02d",selectedHour,selectedMinute));
                 setAttendees();
             }
         }, hour, minute, true);//Yes 24 hour time
@@ -177,24 +186,26 @@ import retrofit2.Response;
 
     void setAttendees(){
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-
         final ArrayAdapter<Friend> adapter = getPossibleAttendees();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String strName = adapter.getItem(which).getUserId();
-                Toast.makeText(getContext(), ""+strName, Toast.LENGTH_SHORT).show();
+                Friend friend = adapter.getItem(which);
+                Toast.makeText(getContext(), ""+friend.getName(), Toast.LENGTH_SHORT).show();
+                meeting.addAttendeeToList(new MeetingAttender(friend.getUserId(), true));
+                sendMeeting(meeting);
             }
         });
-
         builder.show();
     }
 
     ArrayAdapter<Friend> getPossibleAttendees(){
-        List<Friend> friendsList = FriendListFragment.getFriends();
-        ArrayAdapter<Friend> adapter = new FriendsListAdapter(this.getActivity(), friendsList);
+        if(friendList == null)
+             friendList = FriendListFragment.getFriends();
+
+        ArrayAdapter<Friend> adapter = new FriendsListAdapter(this.getActivity(), friendList);
 
         return adapter;
     }
@@ -237,6 +248,22 @@ import retrofit2.Response;
                     Toast.makeText(getActivity(), "Incorrect sending to api", Toast.LENGTH_SHORT).show();
                 }
             });
+    }
+
+    void sendMeeting(Meeting meeting){
+        Call<Meeting> query = apiInterface.sendMeeting(meeting);
+        query.enqueue(new Callback<Meeting>() {
+
+            @Override
+            public void onResponse(Call<Meeting> call, Response<Meeting> response) {
+                Toast.makeText(getActivity(), "Correct sending meeting to api", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<Meeting> call, Throwable t) {
+                Toast.makeText(getActivity(), "Incorrect sending meeting to api", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private String getMapsApiDirectionsUrl(LatLng origin,LatLng dest) {
