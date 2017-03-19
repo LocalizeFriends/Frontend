@@ -2,17 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.friendlocation.friendlocation.fragments.FriendListFragment">
+    tools:context="com.example.friendlocation.friendlocation.fragments.FriendListFragment"
+     android:descendantFocusability="beforeDescendants">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Friend list" />
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@android:id/list"/>
+        android:id="@android:id/list"
+        android:descendantFocusability="beforeDescendants"/>
 
 </FrameLayout>

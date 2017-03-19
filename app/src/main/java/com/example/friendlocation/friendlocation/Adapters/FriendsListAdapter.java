@@ -42,7 +42,7 @@ public class FriendsListAdapter extends ArrayAdapter<Friend> {
             view = inflator.inflate(R.layout.friend_row, null);
             final ViewHolder viewHolder = new ViewHolder();
             viewHolder.name = (TextView) view.findViewById(R.id.friendName);
-            viewHolder.avatar = (ImageView) view.findViewById(R.id.friendImg);
+            //viewHolder.avatar = (ImageView) view.findViewById(R.id.friendImg);
             view.setTag(viewHolder);
         } else {
             view = convertView;

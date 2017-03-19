@@ -8,17 +8,17 @@ import android.widget.ImageView;
  */
 
 public class Friend {
-    double userId;
+    String userId;
     String name;
     Drawable avatar;
 
-    public Friend(double userId, String name, Drawable avatar) {
+    public Friend(String userId, String name, Drawable avatar) {
         this.userId = userId;
         this.name = name;
         this.avatar = avatar;
     }
 
-    public Friend(double userId, String name) {
+    public Friend(String userId, String name) {
         this.userId = userId;
         this.name = name;
     }
@@ -31,11 +31,11 @@ public class Friend {
         this.avatar = avatar;
     }
 
-    public double getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(double userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

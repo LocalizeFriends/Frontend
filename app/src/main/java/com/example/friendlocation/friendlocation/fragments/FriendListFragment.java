@@ -1,6 +1,10 @@
 package com.example.friendlocation.friendlocation.fragments;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.ListFragment;
@@ -10,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.friendlocation.friendlocation.Adapters.FriendsListAdapter;
 import com.example.friendlocation.friendlocation.JavaClasses.Friend;
@@ -23,6 +29,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,11 +69,9 @@ public class FriendListFragment extends ListFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Friend f = friendsList.get(position);
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("userId", f.getUserId());
-                getActivity().setResult(RESULT_OK, returnIntent);
+                Toast.makeText(getContext(), ""+f.getName(), Toast.LENGTH_SHORT).show();
                 //imgs.recycle(); //recycle images
-                getActivity().finish();
+
             }
         });
     }
@@ -81,7 +88,7 @@ public class FriendListFragment extends ListFragment {
             }
         });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, first_name, last_name, email, gender, birthday, location");
+        parameters.putString("fields", "id, first_name, last_name, email, gender, birthday, location, picture.type(large)");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -110,12 +117,24 @@ public class FriendListFragment extends ListFragment {
             friendsData = rs.getJSONArray("data");
             for (int i = 0; i < friendsData.length(); i++) {
                 JSONObject friend = friendsData.getJSONObject(i);
-                double friendId = friend.getDouble("id");
+                String friendId = friend.getString("id");
                 String friendName = friend.getString("name");
-                friends.add(new Friend( friendId,friendName));
+                friends.add(new Friend(friendId,friendName));
+
+                /*
+                URL profilePicUrl = new URL(friend.getJSONObject("picture").getJSONObject("data").getString("url"));
+                Bitmap profilePic= BitmapFactory.decodeStream(profilePicUrl.openConnection().getInputStream());
+                ImageView v1 = new ImageView(getContext());
+                v1.setImageBitmap(profilePic);*/
+                //friends.add(new Friend( friendId,friendName,v1.getDrawable()));
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            /*
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();*/
         }
         return friends;
     }

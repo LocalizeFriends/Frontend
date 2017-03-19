@@ -183,17 +183,8 @@ import retrofit2.Response;
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                long strName = adapter.getItemId(which);
-                AlertDialog.Builder builderInner = new AlertDialog.Builder(getActivity());
-                builderInner.setMessage(""+strName);
-                builderInner.setTitle("Your Selected Item is");
-                builderInner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog,int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builderInner.show();
+                String strName = adapter.getItem(which).getUserId();
+                Toast.makeText(getContext(), ""+strName, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -202,8 +193,8 @@ import retrofit2.Response;
 
     ArrayAdapter<Friend> getPossibleAttendees(){
         List<Friend> friendsList = new ArrayList<>();
-        friendsList.add(new Friend(1,"Hardik"));
-        friendsList.add(new Friend(2,"Jignesh"));
+        friendsList.add(new Friend("1","Hardik"));
+        friendsList.add(new Friend("2","Jignesh"));
         ArrayAdapter<Friend> adapter = new FriendsListAdapter(this.getActivity(), friendsList);
 
         return adapter;
