@@ -1,10 +1,5 @@
 package com.example.friendlocation.friendlocation.fragments;
 
-import com.example.friendlocation.friendlocation.Adapters.FriendsListAdapter;
-import com.example.friendlocation.friendlocation.JavaClasses.Friend;
-import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
-import com.example.friendlocation.friendlocation.JavaClasses.MeetingAttender;
-import com.example.friendlocation.friendlocation.PathDrawing.*;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -27,7 +22,13 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.friendlocation.friendlocation.API.API;
+import com.example.friendlocation.friendlocation.API.Query;
+import com.example.friendlocation.friendlocation.Adapters.FriendsListAdapter;
 import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
+import com.example.friendlocation.friendlocation.JavaClasses.Friend;
+import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
+import com.example.friendlocation.friendlocation.JavaClasses.MeetingAttender;
+import com.example.friendlocation.friendlocation.PathDrawing.ReadTask;
 import com.example.friendlocation.friendlocation.R;
 import com.facebook.AccessToken;
 import com.google.android.gms.common.ConnectionResult;
@@ -44,14 +45,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 @SuppressWarnings("MissingPermission")
     public class MFragment extends Fragment implements
@@ -69,10 +65,10 @@ import retrofit2.Response;
     GoogleMap mGoogleMap;
     LocationRequest mLocationRequest;
     SupportMapFragment supportMapFragment;
-    API.APIInterface apiInterface;
+    static API.APIInterface apiInterface;
     AccessToken token;
     static Marker meetingMarker;
-    private final Calendar mcurrentTime = Calendar.getInstance();
+    private final Calendar mCurrentTime = Calendar.getInstance();
     private List<Friend> friendList;
     static Meeting meeting;
 
@@ -90,6 +86,7 @@ import retrofit2.Response;
                     .addApi(LocationServices.API)
                     .build();
         }
+
         mGoogleApiClient.connect();
         apiInterface = API.getClient();
         token = AccessToken.getCurrentAccessToken();
@@ -100,24 +97,20 @@ import retrofit2.Response;
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         grantPermission();
+        //getMeetings()
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                 if(meetingMarker != null){
                     meetingMarker.remove(); //We allow only one marker.
                 }
-
                 //Add marker
                 MarkerOptions marker = new MarkerOptions().position(
                         new LatLng(point.latitude, point.longitude)).title("");
                 meetingMarker = mGoogleMap.addMarker(marker);
-
                 meeting = new Meeting();
                 drawDialogs(); // Draw ac -> name -> time;
                 meetingMarker.showInfoWindow();
-
-
-
                 drawPath();
             }
         });
@@ -168,8 +161,8 @@ import retrofit2.Response;
     }
 
     void setMeetingTime(){
-        final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mcurrentTime.get(Calendar.MINUTE);
+        final int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mCurrentTime.get(Calendar.MINUTE);
 
         TimePickerDialog mTimePicker;
         mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
@@ -195,7 +188,7 @@ import retrofit2.Response;
                 Friend friend = adapter.getItem(which);
                 Toast.makeText(getContext(), ""+friend.getName(), Toast.LENGTH_SHORT).show();
                 meeting.addAttendeeToList(new MeetingAttender(friend.getUserId(), true));
-                sendMeeting(meeting);
+                Query.sendMeeting(meeting,getActivity());
             }
         });
         builder.show();
@@ -203,10 +196,9 @@ import retrofit2.Response;
 
     ArrayAdapter<Friend> getPossibleAttendees(){
         if(friendList == null)
-             friendList = FriendListFragment.getFriends();
+             friendList = Query.getFriends();
 
         ArrayAdapter<Friend> adapter = new FriendsListAdapter(this.getActivity(), friendList);
-
         return adapter;
     }
 
@@ -234,38 +226,6 @@ import retrofit2.Response;
             mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 }
 
-    void sendApiCall(ApiCall myLocation){
-            Call<ApiCall> query = apiInterface.sendApiCall(myLocation);
-            query.enqueue(new Callback<ApiCall>() {
-                @Override
-                public void onResponse(Call<ApiCall> call, Response<ApiCall> response) {
-                    if (response.isSuccessful()) {
-                        Toast.makeText(getActivity(), "Correct sending to api", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                @Override
-                public void onFailure(Call<ApiCall> call, Throwable t) {
-                    Toast.makeText(getActivity(), "Incorrect sending to api", Toast.LENGTH_SHORT).show();
-                }
-            });
-    }
-
-    void sendMeeting(Meeting meeting){
-        Call<Meeting> query = apiInterface.sendMeeting(meeting);
-        query.enqueue(new Callback<Meeting>() {
-
-            @Override
-            public void onResponse(Call<Meeting> call, Response<Meeting> response) {
-                Toast.makeText(getActivity(), "Correct sending meeting to api", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(Call<Meeting> call, Throwable t) {
-                Toast.makeText(getActivity(), "Incorrect sending meeting to api", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
     private String getMapsApiDirectionsUrl(LatLng origin,LatLng dest) {
             // Origin of route
             String str_origin = "origin="+origin.latitude+","+origin.longitude;
@@ -290,7 +250,7 @@ import retrofit2.Response;
         if(mLastLocation!= null) {
             zoomCamera(17,30);
             ApiCall myLocation = new ApiCall(token.getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
-            sendApiCall(myLocation);
+            Query.sendApiCall(myLocation, getActivity());
         }
     }
 

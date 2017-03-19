@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.friendlocation.friendlocation.Adapters.SectionsPagerAdapter;
 import com.example.friendlocation.friendlocation.R;
 import com.example.friendlocation.friendlocation.fragments.FriendListFragment;
 import com.example.friendlocation.friendlocation.fragments.MFragment;
@@ -59,45 +60,5 @@ public class DashActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            switch(position){
-                case 0:
-                    return new MFragment();
-                case 1:
-                    return new FriendListFragment();
-                case 2:
-                    return new SettingsFragment();
-                default:
-                    return new MFragment();
-            }
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Mapa";
-                case 1:
-                    return "Lista znajomych";
-                case 2:
-                    return "Ustawienia";
-            }
-            return null;
-        }
-    }
 }

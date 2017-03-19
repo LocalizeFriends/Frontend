@@ -1,11 +1,13 @@
 package com.example.friendlocation.friendlocation.API;
 
 import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
+import com.example.friendlocation.friendlocation.JavaClasses.Friend;
 import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -57,8 +59,11 @@ public class API {
         @POST("/api/meeting")
         Call<Meeting> sendMeeting(@Body Meeting meeting);
 
-        @GET("/api/location")
-        Call<Meeting> getMeetings(@Body Meeting meeting);
+        @GET("/api/meetings")
+        Call<List<Meeting>> getMeetings();
+
+        @GET("/api/nerbyfriends")
+        Call<List<Friend>> getNerbyFriends(@Body List<Friend> friends);
     }
 }
 
