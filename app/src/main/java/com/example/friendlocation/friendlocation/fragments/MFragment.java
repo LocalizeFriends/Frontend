@@ -2,6 +2,9 @@ package com.example.friendlocation.friendlocation.fragments;
 
 import com.example.friendlocation.friendlocation.PathDrawing.*;
 import android.Manifest;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -10,13 +13,16 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.friendlocation.friendlocation.API.API;
-import com.example.friendlocation.friendlocation.ApiCall;
+import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
 import com.example.friendlocation.friendlocation.R;
 import com.facebook.AccessToken;
 import com.google.android.gms.common.ConnectionResult;
@@ -34,7 +40,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import butterknife.ButterKnife;
+import java.util.Calendar;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,12 +64,12 @@ import retrofit2.Response;
     SupportMapFragment supportMapFragment;
     API.APIInterface apiInterface;
     AccessToken token;
-    static Marker m;
+    static Marker meetingMarker;
+    private final Calendar mcurrentTime = Calendar.getInstance();
 
     public MFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,21 +94,82 @@ import retrofit2.Response;
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-                if(m != null){
-                    m.remove(); //We allow only one marker.
+                if(meetingMarker != null){
+                    meetingMarker.remove(); //We allow only one marker.
                 }
                 //Add marker
                 MarkerOptions marker = new MarkerOptions().position(
-                        new LatLng(point.latitude, point.longitude)).title("New Marker");
-                m = mGoogleMap.addMarker(marker);
+                        new LatLng(point.latitude, point.longitude)).title("");
+                meetingMarker = mGoogleMap.addMarker(marker);
 
-                //Draw path
-                String url = getMapsApiDirectionsUrl(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), m.getPosition());
-                ReadTask downloadTask = new ReadTask(mGoogleMap);
-                // Start downloading json data from Google Directions API
-                downloadTask.execute(url);
+                drawDialogs(); // Draw ac -> name -> time;
+                meetingMarker.showInfoWindow();
+
+                drawPath();
             }
         });
+    }
+    void drawPath(){
+        if(mLastLocation != null) {
+            //Draw path
+            String url = getMapsApiDirectionsUrl(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), meetingMarker.getPosition());
+            ReadTask downloadTask = new ReadTask(mGoogleMap);
+            // Start downloading json data from Google Directions API
+            downloadTask.execute(url);
+        }
+    }
+
+    void drawDialogs(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Czy chcesz utworzyć spotkanie?");
+        builder.setPositiveButton("Akceptuj", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                setMeetingName();
+            }
+        });
+        builder.setNegativeButton("Odrzuć", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    void setMeetingName(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final LayoutInflater inflater = getActivity().getLayoutInflater();
+        builder.setMessage("Nazwij spotkanie");
+        builder.setView(inflater.inflate(R.layout.customdialog_m, null));
+
+        builder.setPositiveButton("Akceptuj", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Dialog f = (Dialog) dialog;
+                EditText inputTemp = (EditText) f.findViewById(R.id.MeetingName);
+                meetingMarker.setTitle(inputTemp.getText().toString());
+                setMeetingTime();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    void setMeetingTime(){
+        final int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = mcurrentTime.get(Calendar.MINUTE);
+
+        TimePickerDialog mTimePicker;
+        mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                meetingMarker.setTitle(meetingMarker.getTitle() + " - " + String.format("%02d:%02d",selectedHour,selectedMinute));
+            }
+        }, hour, minute, true);//Yes 24 hour time
+        mTimePicker.setTitle("Select Time");
+        mTimePicker.show();
+    }
+
+    void setAttendes(){
+
     }
 
     void grantPermission(){
@@ -118,25 +186,30 @@ import retrofit2.Response;
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if(mLastLocation!= null) {
-            zoomCamera(17,30);
-            ApiCall myLocation = new ApiCall(token.getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
-            sendApiCall(myLocation);
-        }
-    }
-
     void zoomCamera(int zoom, int tilt){
-        Toast.makeText(getActivity(), "MyLocation button clicked," + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude(), Toast.LENGTH_SHORT).show();
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))      // Sets the center of the map to location user
-                .zoom(zoom)                   // Sets the zoom
-                .tilt(tilt)                   // Sets the tilt of the camera to 30 degrees
-                .build();                   // Creates a CameraPosition from the builder
-        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            Toast.makeText(getActivity(), "MyLocation button clicked," + mLastLocation.getLatitude() + "," + mLastLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()))      // Sets the center of the map to location user
+                    .zoom(zoom)                   // Sets the zoom
+                    .tilt(tilt)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+}
+
+    void sendApiCall(ApiCall myLocation){
+            Call<ApiCall> query = apiInterface.sendApiCall(myLocation);
+            query.enqueue(new Callback<ApiCall>() {
+                @Override
+                public void onResponse(Call<ApiCall> call, Response<ApiCall> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getActivity(), "Correct sending to api", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(Call<ApiCall> call, Throwable t) {
+                    Toast.makeText(getActivity(), "Incorrect sending to api", Toast.LENGTH_SHORT).show();
+                }
+            });
     }
 
     private String getMapsApiDirectionsUrl(LatLng origin,LatLng dest) {
@@ -156,20 +229,15 @@ import retrofit2.Response;
             return url;
         }
 
-    void sendApiCall(ApiCall myLocation){
-        Call<ApiCall> query = apiInterface.sendApiCall(myLocation);
-        query.enqueue(new Callback<ApiCall>() {
-            @Override
-            public void onResponse(Call<ApiCall> call, Response<ApiCall> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getActivity(), "Correct sending to api", Toast.LENGTH_SHORT).show();
-                }
-            }
-            @Override
-            public void onFailure(Call<ApiCall> call, Throwable t) {
-                Toast.makeText(getActivity(), "Incorrect sending to api", Toast.LENGTH_SHORT).show();
-            }
-        });
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
+        if(mLastLocation!= null) {
+            zoomCamera(17,30);
+            ApiCall myLocation = new ApiCall(token.getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
+            sendApiCall(myLocation);
+        }
     }
 
     @Override

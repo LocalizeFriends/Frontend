@@ -1,4 +1,4 @@
-package com.example.friendlocation.friendlocation;
+package com.example.friendlocation.friendlocation.JavaClasses;
 
 public class ApiCall {
     String token;

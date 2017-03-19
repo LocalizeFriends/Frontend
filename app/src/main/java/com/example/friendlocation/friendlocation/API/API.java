@@ -1,6 +1,6 @@
 package com.example.friendlocation.friendlocation.API;
 
-import com.example.friendlocation.friendlocation.ApiCall;
+import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
