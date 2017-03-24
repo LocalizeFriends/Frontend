@@ -17,14 +17,16 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public class API {
 
     private static APIInterface apiInterface;
-    private static String url = "http://localhost:8000";
-    private static String baseUrl = "http://localhost:8000";
+    private static String url = "http://192.168.0.10:3000";
+    private static String baseUrl = "http://localhost:3000";
     public static APIInterface getClient() {
         if (apiInterface == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -53,17 +55,16 @@ public class API {
     }
 
     public interface APIInterface {
-
+        @FormUrlEncoded
         @POST("/api/location")
-        Call<ApiCall> sendApiCall(@Body ApiCall apiCallWithLatLong);
-        @POST("/api/meeting")
+        Call<ApiCall> sendApiCall(@Field("fbtoken") String token, @Field("lat") double lat, @Field("lng") double lng );
+        @POST("/api/meetup_proposal")
         Call<Meeting> sendMeeting(@Body Meeting meeting);
 
         @GET("/api/meetings")
         Call<List<Meeting>> getMeetings();
-
-        @GET("/api/nerbyfriends")
-        Call<List<Friend>> getNerbyFriends(@Body List<Friend> friends);
+        @GET("/api/friends_locations")
+        Call<List<Friend>> getFriendsLocation(@Body List<Friend> friends);
     }
 }
 

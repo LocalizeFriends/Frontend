@@ -126,7 +126,7 @@ import java.util.List;
                         new LatLng(point.latitude, point.longitude)).title("");
                 meetingMarker = mGoogleMap.addMarker(marker);
                 meeting = new Meeting();
-                drawDialogs(); // Draw ac -> name -> time;
+                drawDialogs(); // Draw ac -> name -> time -> attendees;
                 meetingMarker.showInfoWindow();
                 drawPath();
             }
@@ -264,11 +264,7 @@ import java.util.List;
     public void onLocationChanged(Location location) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-        if(mLastLocation!= null) {
-            zoomCamera(17,30);
-            ApiCall myLocation = new ApiCall(token.getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
-            Query.sendApiCall(myLocation, getActivity());
-        }
+
     }
 
     @Override
@@ -283,6 +279,12 @@ import java.util.List;
                     MY_REQUEST_FINE_LOCATION);
         }
         grantPermission();
+
+        if(mLastLocation!= null) {
+            zoomCamera(17,30);
+            ApiCall myLocation = new ApiCall(token.getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
+            Query.sendApiCall(myLocation, getActivity());
+        }
         /*
         supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         supportMapFragment.getMapAsync(this);

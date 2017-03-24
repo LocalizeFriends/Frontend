@@ -41,12 +41,18 @@ public class Query {
     static List<Meeting> meetings = new ArrayList<Meeting>();
 
     public static void sendApiCall(ApiCall myLocation, final Activity activity){
-        Call<ApiCall> query = apiInterface.sendApiCall(myLocation);
+        Call<ApiCall> query = apiInterface.sendApiCall(myLocation.getFbtoken(), myLocation.getLat(), myLocation.getLng());
         query.enqueue(new Callback<ApiCall>() {
             @Override
             public void onResponse(Call<ApiCall> call, Response<ApiCall> response) {
+                try {
+                    if(response.errorBody() !=null)
+                        Log.d("sendApiCall onResponse", response.errorBody().string());
+                } catch (IOException e) {}
+
                 if (response.isSuccessful()) {
                     Toast.makeText(activity, "Correct sending to api", Toast.LENGTH_SHORT).show();
+                    Log.d("sendApiCall onSResponse", response.body().toString());
                 }
             }
             @Override
@@ -62,6 +68,11 @@ public class Query {
 
             @Override
             public void onResponse(Call<Meeting> call, Response<Meeting> response) {
+                try {
+                    if(response.errorBody() !=null)
+                        Log.d("sendMeeting onResponse", response.errorBody().string());
+                } catch (IOException e) {}
+
                 Toast.makeText(activity, "Correct sending meeting to api", Toast.LENGTH_SHORT).show();
             }
 
@@ -79,6 +90,38 @@ public class Query {
 
             @Override
             public void onResponse(Call<List<Meeting>> call, Response<List<Meeting>> response) {
+                try {
+                    if(response.errorBody() !=null)
+                        Log.d("getMeetings onResponse", response.errorBody().string());
+                } catch (IOException e) {}
+
+                Toast.makeText(activity, "Correct get meetings", Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful()){
+                    meetings.clear();
+                    meetings.addAll(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Meeting>> call, Throwable t) {
+
+            }
+        });
+        return meetings;
+    }
+
+    public static List<Meeting> getFriendsLocation(final Activity activity){
+
+        Call<List<Meeting>> query = apiInterface.getMeetings();
+        query.enqueue(new Callback<List<Meeting>>() {
+
+            @Override
+            public void onResponse(Call<List<Meeting>> call, Response<List<Meeting>> response) {
+                try {
+                    if(response.errorBody() !=null)
+                        Log.d("getMeetings onResponse", response.errorBody().string());
+                } catch (IOException e) {}
+
                 Toast.makeText(activity, "Correct get meetings", Toast.LENGTH_SHORT).show();
                 if (response.isSuccessful()){
                     meetings.clear();
@@ -131,14 +174,17 @@ public class Query {
 
         JSONArray friendsData = null;
         try {
+            if(rs != null){
             friendsData = rs.getJSONArray("data");
-            for (int i = 0; i < friendsData.length(); i++) {
-                JSONObject friendJson = friendsData.getJSONObject(i);
 
-                URL profilePicUrl = new URL(friendJson.getJSONObject("picture").getJSONObject("data").getString("url"));
-                Bitmap profilePic= BitmapFactory.decodeStream(profilePicUrl.openConnection().getInputStream());
+                for (int i = 0; i < friendsData.length(); i++) {
+                    JSONObject friendJson = friendsData.getJSONObject(i);
 
-                friends.add(new Friend( friendJson.getString("id"),friendJson.getString("name"),new BitmapDrawable(profilePic)));
+                    URL profilePicUrl = new URL(friendJson.getJSONObject("picture").getJSONObject("data").getString("url"));
+                    Bitmap profilePic = BitmapFactory.decodeStream(profilePicUrl.openConnection().getInputStream());
+
+                    friends.add(new Friend(friendJson.getString("id"), friendJson.getString("name"), new BitmapDrawable(profilePic)));
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
