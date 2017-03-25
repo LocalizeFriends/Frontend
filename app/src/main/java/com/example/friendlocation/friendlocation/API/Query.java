@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
 import com.example.friendlocation.friendlocation.JavaClasses.Friend;
+import com.example.friendlocation.friendlocation.JavaClasses.FriendLocation;
+import com.example.friendlocation.friendlocation.JavaClasses.FriendsLocationList;
 import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -39,6 +41,7 @@ public class Query {
 
     static API.APIInterface apiInterface = API.getClient();
     static List<Meeting> meetings = new ArrayList<Meeting>();
+    static List<FriendLocation> FriendLocations = new ArrayList<>();
 
     public static void sendApiCall(ApiCall myLocation, final Activity activity){
         Call<ApiCall> query = apiInterface.sendApiCall(myLocation.getFbtoken(), myLocation.getLat(), myLocation.getLng());
@@ -110,13 +113,13 @@ public class Query {
         return meetings;
     }
 
-    public static List<Meeting> getFriendsLocation(final Activity activity){
+    public static List<FriendLocation> getFriendsLocation(String fbtoken , final Activity activity){
 
-        Call<List<Meeting>> query = apiInterface.getMeetings();
-        query.enqueue(new Callback<List<Meeting>>() {
+        Call <FriendsLocationList> query = apiInterface.getFriendsLocation(fbtoken);
+        query.enqueue(new Callback<FriendsLocationList>() {
 
             @Override
-            public void onResponse(Call<List<Meeting>> call, Response<List<Meeting>> response) {
+            public void onResponse(Call<FriendsLocationList> call, Response<FriendsLocationList> response) {
                 try {
                     if(response.errorBody() !=null)
                         Log.d("getMeetings onResponse", response.errorBody().string());
@@ -124,17 +127,16 @@ public class Query {
 
                 Toast.makeText(activity, "Correct get meetings", Toast.LENGTH_SHORT).show();
                 if (response.isSuccessful()){
-                    meetings.clear();
-                    meetings.addAll(response.body());
+                    FriendLocations = response.body().getFriendLocations();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Meeting>> call, Throwable t) {
-
+            public void onFailure(Call<FriendsLocationList> call, Throwable t) {
+                Toast.makeText(activity, "Failed!", Toast.LENGTH_SHORT).show();
             }
         });
-        return meetings;
+        return FriendLocations;
     }
 
     //##################### FacebookApi #####################
@@ -146,7 +148,7 @@ public class Query {
             }
         });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, first_name, last_name, email, gender, birthday, location, picture.type(large)");
+        parameters.putString("fields", "id, first_name, last_name, email, gender, birthday, Location, picture.type(large)");
         request.setParameters(parameters);
         request.executeAsync();
     }

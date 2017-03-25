@@ -36,6 +36,7 @@ public class FriendListFragment extends ListFragment {
     @Override
     public void onViewCreated (View view, Bundle savedInstanceState) {
         populateFriendList();
+        Query.getFriendsLocation(AccessToken.getCurrentAccessToken().getToken(),getActivity());
         adapter = new FriendsListAdapter(this.getActivity(), friendsList);
         setListAdapter(adapter);
 
