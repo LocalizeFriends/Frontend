@@ -34,4 +34,6 @@ public class ApiCall {
     public void setLat(double lat) {
         this.lat = lat;
     }
+
+
 }

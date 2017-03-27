@@ -4,10 +4,12 @@ import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
 import com.example.friendlocation.friendlocation.JavaClasses.FriendsLocationList;
 import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
 import com.example.friendlocation.friendlocation.JavaClasses.FriendLocation;
+import com.example.friendlocation.friendlocation.JavaClasses.MeetupProposalList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import okhttp3.Interceptor;
@@ -24,7 +26,6 @@ public class API {
 
     private static APIInterface apiInterface;
     private static String url = "http://192.168.0.160:3000";
-    private static String baseUrl = "http://localhost:3000";
     public static APIInterface getClient() {
         if (apiInterface == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -56,11 +57,16 @@ public class API {
         @FormUrlEncoded
         @POST("/api/Location")
         Call<ApiCall> sendApiCall(@Field("fbtoken") String token, @Field("lat") double lat, @Field("lng") double lng );
+        @FormUrlEncoded
         @POST("/api/meetup_proposal")
-        Call<Meeting> sendMeeting(@Body Meeting meeting);
+        Call<Meeting> sendMeetupProposal(@Field("fbtoken") String token, @Field("name") String name,
+                                         @Field("timestamp_ms")Timestamp timestamp,
+                                         @Field("place_name") String placeName,
+                                         @Field("lng") double lng, @Field("lat") double lat,
+                                         @Field("invite") String inviteList);
 
-        @GET("/api/meetings")
-        Call<List<Meeting>> getMeetings();
+        @GET("/api/meetup_proposals")
+        Call<MeetupProposalList> getMeetings(@Query("fbtoken") String fbtoken);
 
         @GET("/api/friends_locations")
         Call<FriendsLocationList> getFriendsLocation(@Query("fbtoken") String fbtoken);

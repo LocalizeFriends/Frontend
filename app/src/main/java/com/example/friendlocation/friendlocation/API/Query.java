@@ -14,6 +14,7 @@ import com.example.friendlocation.friendlocation.JavaClasses.Friend;
 import com.example.friendlocation.friendlocation.JavaClasses.FriendLocation;
 import com.example.friendlocation.friendlocation.JavaClasses.FriendsLocationList;
 import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
+import com.example.friendlocation.friendlocation.JavaClasses.MeetupProposalList;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -40,8 +41,9 @@ import retrofit2.Response;
 public class Query {
 
     static API.APIInterface apiInterface = API.getClient();
-    static List<Meeting> meetings = new ArrayList<Meeting>();
+    static List<Meeting> meetingProposals = new ArrayList<Meeting>();
     static List<FriendLocation> FriendLocations = new ArrayList<>();
+
 
     public static void sendApiCall(ApiCall myLocation, final Activity activity){
         Call<ApiCall> query = apiInterface.sendApiCall(myLocation.getFbtoken(), myLocation.getLat(), myLocation.getLng());
@@ -65,8 +67,11 @@ public class Query {
         });
     }
 
-    public static void sendMeeting(Meeting meeting, final Activity activity){
-        Call<Meeting> query = apiInterface.sendMeeting(meeting);
+    public static void sendMeetupProposal(Meeting meeting, final Activity activity){
+        Call<Meeting> query = apiInterface.sendMeetupProposal(meeting.getFbtoken(),
+                meeting.getName(), meeting.getTimestamp(), meeting.getPlace_name(),
+                meeting.getLng(), meeting.getLat(), meeting.getAttendersStringList());
+
         query.enqueue(new Callback<Meeting>() {
 
             @Override
@@ -75,7 +80,6 @@ public class Query {
                     if(response.errorBody() !=null)
                         Log.d("sendMeeting onResponse", response.errorBody().string());
                 } catch (IOException e) {}
-
                 Toast.makeText(activity, "Correct sending meeting to api", Toast.LENGTH_SHORT).show();
             }
 
@@ -86,13 +90,13 @@ public class Query {
         });
     }
 
-    public static List<Meeting> getMeetings(final Activity activity){
+    public static List<Meeting> getMeetingProposals(final Activity activity){
 
-        Call<List<Meeting>> query = apiInterface.getMeetings();
-        query.enqueue(new Callback<List<Meeting>>() {
+        Call<MeetupProposalList> query = apiInterface.getMeetings(AccessToken.getCurrentAccessToken().getToken());
+        query.enqueue(new Callback<MeetupProposalList>() {
 
             @Override
-            public void onResponse(Call<List<Meeting>> call, Response<List<Meeting>> response) {
+            public void onResponse(Call<MeetupProposalList> call, Response<MeetupProposalList> response) {
                 try {
                     if(response.errorBody() !=null)
                         Log.d("getMeetings onResponse", response.errorBody().string());
@@ -100,17 +104,16 @@ public class Query {
 
                 Toast.makeText(activity, "Correct get meetings", Toast.LENGTH_SHORT).show();
                 if (response.isSuccessful()){
-                    meetings.clear();
-                    meetings.addAll(response.body());
+                    meetingProposals = response.body().getMeetings();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Meeting>> call, Throwable t) {
+            public void onFailure(Call<MeetupProposalList> call, Throwable t) {
 
             }
         });
-        return meetings;
+        return meetingProposals;
     }
 
     public static List<FriendLocation> getFriendsLocation(String fbtoken , final Activity activity){

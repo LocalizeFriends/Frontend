@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.friendlocation.friendlocation.activities.DashActivity;
 import com.facebook.AccessToken;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(FacebookException exception) {
-                    // App code
+                    Toast.makeText(getBaseContext(), "Incorect facebook log in try ", Toast.LENGTH_SHORT).show();
                 }
             });
     }
