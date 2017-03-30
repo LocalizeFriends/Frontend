@@ -2,6 +2,9 @@ package com.example.friendlocation.friendlocation.JavaClasses;
 
 import android.text.TextUtils;
 
+import com.facebook.AccessToken;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +18,14 @@ public class Meeting {
     double lng;
     List<MeetingAttender> attendersList;
 
-    public Meeting(String fbtoken, String user_id, String name, String place_name, Timestamp timestap, double lat, double lng, List<MeetingAttender> attendersList) {
-        this.fbtoken = fbtoken;
+    public Meeting(String user_id, String name, String place_name, Timestamp timestap, LatLng latLng, List<MeetingAttender> attendersList) {
+        this.fbtoken = AccessToken.getCurrentAccessToken().getToken();
         this.user_id = user_id;
         this.name = name;
         this.place_name = place_name;
         this.timestamp = timestap;
-        this.lat = lat;
-        this.lng = lng;
+        this.lat = latLng.latitude;
+        this.lng = latLng.longitude;
         this.attendersList = attendersList;
     }
 

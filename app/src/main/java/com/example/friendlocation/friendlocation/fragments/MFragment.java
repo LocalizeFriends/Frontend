@@ -50,9 +50,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -110,8 +115,6 @@ import butterknife.ButterKnife;
                             .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                     friendMarkerList.add(mGoogleMap.addMarker(friendMarker));
                 }
-
-
             }
         });
 
@@ -156,6 +159,9 @@ import butterknife.ButterKnife;
                 drawDialogs(); // Draw ac -> name -> time -> attendees;
                 meetingMarker.showInfoWindow();
                 drawPath();
+
+                //send meeting
+
             }
         });
     }
@@ -213,7 +219,13 @@ import butterknife.ButterKnife;
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 meetingMarker.setTitle(meetingMarker.getTitle() + " - " + String.format("%02d:%02d",selectedHour,selectedMinute));
-                //TODO meeting.getTimestamp(String.format("%02d:%02d",selectedHour,selectedMinute));
+
+                Calendar d = Calendar.getInstance();
+                d.setTimeZone(TimeZone.getTimeZone("UTC"));
+                d.set(Calendar.HOUR_OF_DAY, selectedHour);
+                d.set(Calendar.MINUTE, selectedMinute);
+                meeting.setTimestamp(new Timestamp(d.getTimeInMillis()));
+                //TODO sprawdzic czy to dziala
                 setAttendees();
             }
         }, hour, minute, true);//Yes 24 hour time
@@ -232,7 +244,7 @@ import butterknife.ButterKnife;
                 Friend friend = adapter.getItem(which);
                 Toast.makeText(getContext(), ""+friend.getName(), Toast.LENGTH_SHORT).show();
                 meeting.addAttendeeToList(new MeetingAttender(friend.getUserId(), true));
-                //Query.sendMeeting(meeting,getActivity());
+                Query.sendMeetupProposal(meeting, getActivity());
             }
         });
         builder.show();
