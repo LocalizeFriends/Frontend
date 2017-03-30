@@ -3,6 +3,7 @@ package com.example.friendlocation.friendlocation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +15,7 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        String tokenFb = FirebaseInstanceId.getInstance().getToken();
+        Log.v("token:", tokenFb);
 
         callbackManager = CallbackManager.Factory.create();
         loginButton.setReadPermissions("public_profile","email", "read_custom_friendlists");

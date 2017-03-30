@@ -33,7 +33,9 @@ dependencies {
     compile 'com.google.android.gms:play-services:9.6.0'
     compile 'com.android.support:mediarouter-v7:25.3.0'
     compile 'com.android.support:appcompat-v7:25.3.0'
-
+    compile 'com.google.firebase:firebase-core:9.6.0'
+    compile 'com.google.firebase:firebase-messaging:9.6.0'
+    compile 'com.firebase:firebase-jobdispatcher:0.5.2'
     compile 'com.android.support:customtabs:25.3.0'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-v4:25.3.0'
@@ -48,7 +50,10 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:[4,5]'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 
 

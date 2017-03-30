@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -16,11 +17,14 @@ import com.example.friendlocation.friendlocation.R;
 import com.example.friendlocation.friendlocation.fragments.FriendListFragment;
 import com.example.friendlocation.friendlocation.fragments.MFragment;
 import com.example.friendlocation.friendlocation.fragments.SettingsFragment;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DashActivity extends AppCompatActivity {
+public class DashActivity extends AppCompatActivity{
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -32,6 +36,7 @@ public class DashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dash);
         ButterKnife.bind(this);
+        FirebaseMessaging.getInstance();
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -59,6 +64,4 @@ public class DashActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }

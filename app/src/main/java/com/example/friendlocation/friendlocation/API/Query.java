@@ -136,7 +136,7 @@ public class Query {
 
             @Override
             public void onFailure(Call<FriendsLocationList> call, Throwable t) {
-                Toast.makeText(activity, "Failed!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Failed to connect backend!", Toast.LENGTH_SHORT).show();
             }
         });
         return FriendLocations;

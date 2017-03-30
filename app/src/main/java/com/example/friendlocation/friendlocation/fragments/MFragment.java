@@ -186,7 +186,7 @@ import java.util.List;
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
                 meetingMarker.setTitle(meetingMarker.getTitle() + " - " + String.format("%02d:%02d",selectedHour,selectedMinute));
-                meeting.setTime(String.format("%02d:%02d",selectedHour,selectedMinute));
+                //TODO meeting.getTimestamp(String.format("%02d:%02d",selectedHour,selectedMinute));
                 setAttendees();
             }
         }, hour, minute, true);//Yes 24 hour time
@@ -205,7 +205,7 @@ import java.util.List;
                 Friend friend = adapter.getItem(which);
                 Toast.makeText(getContext(), ""+friend.getName(), Toast.LENGTH_SHORT).show();
                 meeting.addAttendeeToList(new MeetingAttender(friend.getUserId(), true));
-                Query.sendMeeting(meeting,getActivity());
+                //Query.sendMeeting(meeting,getActivity());
             }
         });
         builder.show();
