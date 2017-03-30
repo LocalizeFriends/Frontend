@@ -43,6 +43,7 @@ public class Query {
     static API.APIInterface apiInterface = API.getClient();
     static List<Meeting> meetingProposals = new ArrayList<Meeting>();
     static List<FriendLocation> FriendLocations = new ArrayList<>();
+    static List<FriendLocation> FriendLocationsWithinRange = new ArrayList<>();
 
 
     public static void sendApiCall(ApiCall myLocation, final Activity activity){
@@ -140,6 +141,32 @@ public class Query {
             }
         });
         return FriendLocations;
+    }
+
+    public static List<FriendLocation> getFriendsLocationWithinRange(String fbtoken,double lng, double lat, int meters, final Activity activity){
+
+        Call <FriendsLocationList> query = apiInterface.getFriendsWithinRange(fbtoken, lng, lat, meters);
+        query.enqueue(new Callback<FriendsLocationList>() {
+
+            @Override
+            public void onResponse(Call<FriendsLocationList> call, Response<FriendsLocationList> response) {
+                try {
+                    if(response.errorBody() !=null)
+                        Log.d("getMeetings onResponse", response.errorBody().string());
+                } catch (IOException e) {}
+
+                Toast.makeText(activity, "Correct get meetings", Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful()){
+                    FriendLocationsWithinRange = response.body().getFriendLocations();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FriendsLocationList> call, Throwable t) {
+                Toast.makeText(activity, "Failed to connect backend!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        return FriendLocationsWithinRange;
     }
 
     //##################### FacebookApi #####################

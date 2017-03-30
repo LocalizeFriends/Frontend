@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -50,6 +51,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 @SuppressWarnings("MissingPermission")
     public class MFragment extends Fragment implements
@@ -73,7 +76,7 @@ import java.util.List;
     private final Calendar mCurrentTime = Calendar.getInstance();
     private List<Friend> friendList;
     static Meeting meeting;
-
+    @BindView(R.id.find_friends) Button find_friends;
     public MFragment() {
         // Required empty public constructor
     }
@@ -88,6 +91,16 @@ import java.util.List;
                     .addApi(LocationServices.API)
                     .build();
         }
+        ButterKnife.bind(this.getView());
+        find_friends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Query.getFriendsLocationWithinRange(AccessToken.getCurrentAccessToken().getToken(),
+                        mLastLocation.getLongitude(), mLastLocation.getLatitude(), 1000,
+                        getActivity());
+            }
+        });
+
 
         mGoogleApiClient.connect();
         apiInterface = API.getClient();

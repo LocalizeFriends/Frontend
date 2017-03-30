@@ -70,6 +70,12 @@ public class API {
 
         @GET("/api/friends_locations")
         Call<FriendsLocationList> getFriendsLocation(@Query("fbtoken") String fbtoken);
+
+        @GET ("/api/friends_within_range")
+        Call<FriendsLocationList> getFriendsWithinRange(@Query("fbtoken") String fbtoken,
+                                                        @Query("lng") double lng,
+                                                        @Query("lat") double lat,
+                                                        @Query("range") int meters);
     }
 }
 

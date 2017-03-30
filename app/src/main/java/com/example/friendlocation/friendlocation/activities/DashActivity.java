@@ -2,23 +2,13 @@ package com.example.friendlocation.friendlocation.activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.friendlocation.friendlocation.Adapters.SectionsPagerAdapter;
 import com.example.friendlocation.friendlocation.R;
-import com.example.friendlocation.friendlocation.fragments.FriendListFragment;
-import com.example.friendlocation.friendlocation.fragments.MFragment;
-import com.example.friendlocation.friendlocation.fragments.SettingsFragment;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import butterknife.BindView;

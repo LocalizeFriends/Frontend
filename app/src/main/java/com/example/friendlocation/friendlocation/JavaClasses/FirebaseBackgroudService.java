@@ -8,15 +8,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.friendlocation.friendlocation.MainActivity;
 import com.example.friendlocation.friendlocation.R;
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.JobService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -35,7 +29,7 @@ public class FirebaseBackgroudService extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             String title = remoteMessage.getNotification().getTitle(); //get title
             String message = remoteMessage.getNotification().getBody(); //get message
-
+            String data = remoteMessage.getData().get("track");
             Log.d(TAG, "Message Notification Title: " + title);
             Log.d(TAG, "Message Notification Body: " + message);
            // Toast.makeText(getBaseContext(), "Correct get meetings", Toast.LENGTH_SHORT).show();
