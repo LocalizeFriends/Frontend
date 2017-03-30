@@ -13,5 +13,29 @@ public class Location {
         this.lng = lng;
         this.timestap = timestap;
     }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public Timestamp getTimestap() {
+        return timestap;
+    }
+
+    public void setTimestap(Timestamp timestap) {
+        this.timestap = timestap;
+    }
 }
 

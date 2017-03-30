@@ -29,6 +29,7 @@ import com.example.friendlocation.friendlocation.API.Query;
 import com.example.friendlocation.friendlocation.Adapters.FriendsListAdapter;
 import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
 import com.example.friendlocation.friendlocation.JavaClasses.Friend;
+import com.example.friendlocation.friendlocation.JavaClasses.FriendLocation;
 import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
 import com.example.friendlocation.friendlocation.JavaClasses.MeetingAttender;
 import com.example.friendlocation.friendlocation.PathDrawing.ReadTask;
@@ -43,6 +44,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -73,6 +75,7 @@ import butterknife.ButterKnife;
     static API.APIInterface apiInterface;
     AccessToken token;
     static Marker meetingMarker;
+    private List<Marker> friendMarkerList = new ArrayList<>();
     private final Calendar mCurrentTime = Calendar.getInstance();
     private List<Friend> friendList;
     static Meeting meeting;
@@ -91,13 +94,24 @@ import butterknife.ButterKnife;
                     .addApi(LocationServices.API)
                     .build();
         }
-        ButterKnife.bind(this.getView());
+        View view = inflater.inflate(R.layout.fragment_m, container, false);
+        ButterKnife.bind(this, view);
         find_friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Query.getFriendsLocationWithinRange(AccessToken.getCurrentAccessToken().getToken(),
+                friendMarkerList.clear();
+                List<FriendLocation> nerbyFriendLocations = Query.getFriendsLocationWithinRange(AccessToken.getCurrentAccessToken().getToken(),
                         mLastLocation.getLongitude(), mLastLocation.getLatitude(), 1000,
                         getActivity());
+
+                for (FriendLocation f : nerbyFriendLocations){
+                    MarkerOptions friendMarker = new MarkerOptions().position( new LatLng(f.getLocation().getLng(),
+                            f.getLocation().getLat())).title(f.getName()).icon(BitmapDescriptorFactory
+                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    friendMarkerList.add(mGoogleMap.addMarker(friendMarker));
+                }
+
+
             }
         });
 
@@ -105,7 +119,7 @@ import butterknife.ButterKnife;
         mGoogleApiClient.connect();
         apiInterface = API.getClient();
         token = AccessToken.getCurrentAccessToken();
-        return inflater.inflate(R.layout.fragment_m, container, false);
+        return view;
     }
 
         @Override

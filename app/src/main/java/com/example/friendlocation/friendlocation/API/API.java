@@ -25,7 +25,7 @@ import retrofit2.http.Query;
 public class API {
 
     private static APIInterface apiInterface;
-    private static String url = "http://192.168.0.160:3000";
+    private static String url = "http://192.168.1.100:3000";
     public static APIInterface getClient() {
         if (apiInterface == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()

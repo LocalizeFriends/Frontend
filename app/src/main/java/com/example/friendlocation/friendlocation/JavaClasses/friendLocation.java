@@ -16,4 +16,28 @@ public class FriendLocation {
         this.name = name;
         this.Location = Location;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public com.example.friendlocation.friendlocation.JavaClasses.Location getLocation() {
+        return Location;
+    }
+
+    public void setLocation(com.example.friendlocation.friendlocation.JavaClasses.Location location) {
+        Location = location;
+    }
 }
