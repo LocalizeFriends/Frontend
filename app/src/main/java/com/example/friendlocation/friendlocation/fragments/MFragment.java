@@ -32,6 +32,8 @@ import com.example.friendlocation.friendlocation.JavaClasses.Friend;
 import com.example.friendlocation.friendlocation.JavaClasses.FriendLocation;
 import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
 import com.example.friendlocation.friendlocation.JavaClasses.MeetingAttender;
+import com.example.friendlocation.friendlocation.JavaClasses.MeetupProposalList;
+import com.example.friendlocation.friendlocation.JavaClasses.MeetupSeting;
 import com.example.friendlocation.friendlocation.JavaClasses.MyFirebaseInstanceIDService;
 import com.example.friendlocation.friendlocation.PathDrawing.ReadTask;
 import com.example.friendlocation.friendlocation.R;
@@ -63,12 +65,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 @SuppressWarnings("MissingPermission")
-    public class MFragment extends Fragment implements
+public class MFragment extends Fragment implements
                                             OnMapReadyCallback,
                                             LocationListener,
                                             GoogleApiClient.ConnectionCallbacks,
                                             GoogleApiClient.OnConnectionFailedListener
-    {
+{
 
     private ArrayList<MarkerOptions> markers;
     final private int MY_REQUEST_FINE_LOCATION = 124;
@@ -78,13 +80,13 @@ import butterknife.ButterKnife;
     GoogleMap mGoogleMap;
     LocationRequest mLocationRequest;
     static API.APIInterface apiInterface;
-    AccessToken token;
     static Marker meetingMarker;
     private List<Marker> friendMarkerList = new ArrayList<>();
-    private final Calendar mCurrentTime = Calendar.getInstance();
     private List<Friend> friendList;
-    static Meeting meeting;
+    List<Meeting> meetupProposalList;
+
     @BindView(R.id.find_friends) Button find_friends;
+
     public MFragment() {
         // Required empty public constructor
     }
@@ -103,7 +105,6 @@ import butterknife.ButterKnife;
         ButterKnife.bind(this, view);
         mGoogleApiClient.connect();
         apiInterface = API.getClient();
-        token = AccessToken.getCurrentAccessToken();
         MyFirebaseInstanceIDService s = new MyFirebaseInstanceIDService();
         s.onTokenRefresh();
 
@@ -121,150 +122,42 @@ import butterknife.ButterKnife;
                             .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                     friendMarkerList.add(mGoogleMap.addMarker(friendMarker));
                 }
-
-                
+                meetupProposalList = checkForMeetings();
             }
         });
-
         return view;
     }
 
-        @Override
-        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-            FragmentManager fm = getChildFragmentManager();
-            SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentByTag("mapFragment");
-            if (mapFragment == null) {
-                mapFragment = new SupportMapFragment();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.add(R.id.map_container, mapFragment, "mapFragment");
-                ft.commit();
-                fm.executePendingTransactions();
-            }
-            mapFragment.getMapAsync(this);
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        FragmentManager fm = getChildFragmentManager();
+        SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentByTag("mapFragment");
+        if (mapFragment == null) {
+            mapFragment = new SupportMapFragment();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.add(R.id.map_container, mapFragment, "mapFragment");
+            ft.commit();
+            fm.executePendingTransactions();
         }
+        mapFragment.getMapAsync(this);
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
 
-        //getMeetings()
+        //setMeetings()
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
-                if(meetingMarker != null){
-                    meetingMarker.remove(); //We allow only one marker.
-                }
-                //Add marker
-                MarkerOptions marker = new MarkerOptions().position(
-                        new LatLng(point.latitude, point.longitude)).title("");
-                meetingMarker = mGoogleMap.addMarker(marker);
-                meeting = new Meeting();
-                drawDialogs(); // Draw ac -> name -> time -> attendees;
-                meetingMarker.showInfoWindow();
-                drawPath();
-
-                //send meeting
-
+            new MeetupSeting(getActivity(),mGoogleMap,meetingMarker,mLastLocation,point,friendList);
             }
         });
     }
-    void drawPath(){
-        if(mLastLocation != null) {
-            //Draw path
-            String url = getMapsApiDirectionsUrl(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), meetingMarker.getPosition());
-            //meeting.setLat(meetingMarker.getPosition().latitude);
-            //meeting.setLat(meetingMarker.getPosition().longitude);
 
-
-
-            ReadTask downloadTask = new ReadTask(mGoogleMap);
-            // Start downloading json data from Google Directions API
-            downloadTask.execute(url);
-        }
-    }
-
-    void drawDialogs(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Czy chcesz utworzyć spotkanie?");
-        builder.setPositiveButton("Akceptuj", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                setMeetingName();
-            }
-        });
-        builder.setNegativeButton("Odrzuć", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    void setMeetingName(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
-        builder.setMessage("Nazwij spotkanie");
-        builder.setView(inflater.inflate(R.layout.customdialog_m, null));
-
-        builder.setPositiveButton("Akceptuj", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                Dialog f = (Dialog) dialog;
-                EditText inputTemp = (EditText) f.findViewById(R.id.MeetingName);
-                meetingMarker.setTitle(inputTemp.getText().toString());
-                meeting.setName(inputTemp.getText().toString());
-                setMeetingTime();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
-
-    void setMeetingTime(){
-        final int hour = mCurrentTime.get(Calendar.HOUR_OF_DAY);
-        int minute = mCurrentTime.get(Calendar.MINUTE);
-
-        TimePickerDialog mTimePicker;
-        mTimePicker = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                meetingMarker.setTitle(meetingMarker.getTitle() + " - " + String.format("%02d:%02d",selectedHour,selectedMinute));
-
-                Calendar d = Calendar.getInstance();
-                d.setTimeZone(TimeZone.getTimeZone("UTC"));
-                d.set(Calendar.HOUR_OF_DAY, selectedHour);
-                d.set(Calendar.MINUTE, selectedMinute);
-                meeting.setTimestamp(d.getTimeInMillis());
-                //TODO sprawdzic czy to dziala
-                setAttendees();
-            }
-        }, hour, minute, true);//Yes 24 hour time
-        mTimePicker.setTitle("Select Time");
-        mTimePicker.show();
-    }
-
-    void setAttendees(){
-        final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final ArrayAdapter<Friend> adapter = getPossibleAttendees();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Friend friend = adapter.getItem(which);
-                Toast.makeText(getContext(), ""+friend.getName(), Toast.LENGTH_SHORT).show();
-                meeting.addAttendeeToList(new MeetingAttender(friend.getUserId(), true));
-                Query.sendMeetupProposal(meeting, getActivity());
-            }
-        });
-        builder.show();
-    }
-
-    ArrayAdapter<Friend> getPossibleAttendees(){
-        if(friendList == null)
-             friendList = Query.getFriends();
-
-        ArrayAdapter<Friend> adapter = new FriendsListAdapter(this.getActivity(), friendList);
-        return adapter;
+    List<Meeting> checkForMeetings(){
+        return Query.getMeetingProposals(getActivity());
     }
 
     void grantPermission(){
@@ -291,23 +184,6 @@ import butterknife.ButterKnife;
             mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 }
 
-    private String getMapsApiDirectionsUrl(LatLng origin,LatLng dest) {
-            // Origin of route
-            String str_origin = "origin="+origin.latitude+","+origin.longitude;
-            // Destination of route
-            String str_dest = "destination="+dest.latitude+","+dest.longitude;
-            // Sensor enabled
-            String sensor = "sensor=false";
-            String mode = "transit";
-            // Building the parameters to the web service
-            String parameters = str_origin+"&"+str_dest+"&"+sensor + mode;
-            // Output format
-            String output = "json";
-            // Building the url to the web service
-            String url = "https://maps.googleapis.com/maps/api/directions/"+output+"?"+parameters;
-            return url;
-        }
-
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
@@ -330,7 +206,7 @@ import butterknife.ButterKnife;
 
         if(mLastLocation!= null) {
             zoomCamera(17,30);
-            ApiCall myLocation = new ApiCall(token.getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
+            ApiCall myLocation = new ApiCall(AccessToken.getCurrentAccessToken().getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
             Query.sendApiCall(myLocation, getActivity());
         }
         /*
