@@ -25,7 +25,7 @@ import retrofit2.http.Query;
 public class API {
 
     private static APIInterface apiInterface;
-    private static String url = "http://192.168.43.226:3000";//"https://localizefriends.ct8.pl";
+    private static String url = "http://172.16.42.73:3000";//"https://localizefriends.ct8.pl";
     public static APIInterface getClient() {
         if (apiInterface == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -60,7 +60,7 @@ public class API {
         @FormUrlEncoded
         @POST("/api/meetup_proposal")
         Call<Meeting> sendMeetupProposal(@Field("fbtoken") String token, @Field("name") String name,
-                                         @Field("timestamp_ms")Timestamp timestamp,
+                                         @Field("timestamp_ms")long timestamp,
                                          @Field("place_name") String placeName,
                                          @Field("lng") double lng, @Field("lat") double lat,
                                          @Field("invite") String inviteList);

@@ -30,16 +30,19 @@ public class Meeting {
     }
 
     public Meeting() {
+        this.fbtoken = AccessToken.getCurrentAccessToken().getToken();
     }
 
     public String getAttendersStringList() {
-        /*String stringList = "";
-        for (MeetingAttender attender:
-             attendersList) {
-            stringList += "," + attender.getUserId();
-        }*/
-
-        return TextUtils.join(",", attendersList);
+        String stringList = "";
+        for (MeetingAttender attender: attendersList) {
+            if(stringList.equals("")){
+                stringList += attender.getUserId();
+            }else {
+                stringList += "," + attender.getUserId();
+            }
+        }
+        return stringList;
     }
     public List<MeetingAttender> getAttendersList() {
         return attendersList;
@@ -69,6 +72,7 @@ public class Meeting {
 
     public void setName(String name) {
         this.name = name;
+        this.place_name = name;
     }
 
     public double getLat() {

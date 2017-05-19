@@ -84,7 +84,13 @@ public class Query {
                     if(response.errorBody() !=null)
                         Log.d("sendMeeting onResponse", response.errorBody().string());
                 } catch (IOException e) {}
-                Toast.makeText(activity, "Correct sending meeting to api", Toast.LENGTH_SHORT).show();
+
+                if(response.isSuccessful()){
+                    Toast.makeText(activity, "Correct sending meeting to api", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(activity, "Incorrect data code: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override

@@ -121,6 +121,8 @@ import butterknife.ButterKnife;
                             .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
                     friendMarkerList.add(mGoogleMap.addMarker(friendMarker));
                 }
+
+                
             }
         });
 
@@ -171,6 +173,11 @@ import butterknife.ButterKnife;
         if(mLastLocation != null) {
             //Draw path
             String url = getMapsApiDirectionsUrl(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), meetingMarker.getPosition());
+            //meeting.setLat(meetingMarker.getPosition().latitude);
+            //meeting.setLat(meetingMarker.getPosition().longitude);
+
+
+
             ReadTask downloadTask = new ReadTask(mGoogleMap);
             // Start downloading json data from Google Directions API
             downloadTask.execute(url);
