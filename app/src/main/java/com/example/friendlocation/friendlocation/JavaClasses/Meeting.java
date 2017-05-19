@@ -13,12 +13,12 @@ public class Meeting {
     String user_id;
     String name;
     String place_name;
-    Timestamp timestamp;
+    long timestamp;
     double lat;
     double lng;
     List<MeetingAttender> attendersList;
 
-    public Meeting(String user_id, String name, String place_name, Timestamp timestap, LatLng latLng, List<MeetingAttender> attendersList) {
+    public Meeting(String user_id, String name, String place_name, long timestap, LatLng latLng, List<MeetingAttender> attendersList) {
         this.fbtoken = AccessToken.getCurrentAccessToken().getToken();
         this.user_id = user_id;
         this.name = name;
@@ -103,11 +103,11 @@ public class Meeting {
         this.place_name = place_name;
     }
 
-    public Timestamp getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 }

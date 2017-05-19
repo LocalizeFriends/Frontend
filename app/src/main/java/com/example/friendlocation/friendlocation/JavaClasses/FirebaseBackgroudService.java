@@ -22,7 +22,7 @@ public class FirebaseBackgroudService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
+            sendNotification("data", remoteMessage.getData().get("track"));
         }
 
         // Check if message contains a notification payload.

@@ -42,7 +42,9 @@
         <meta-data android:name="android.support.VERSION" android:value="25.3.0" />
 
         <service
-            android:name=".JavaClasses.FirebaseBackgroudService">
+            android:name=".JavaClasses.FirebaseBackgroudService"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

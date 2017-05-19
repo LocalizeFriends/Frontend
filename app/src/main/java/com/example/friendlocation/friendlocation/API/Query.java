@@ -52,8 +52,11 @@ public class Query {
             @Override
             public void onResponse(Call<ApiCall> call, Response<ApiCall> response) {
                 try {
-                    if(response.errorBody() !=null)
-                        Log.d("sendApiCall onResponse", response.errorBody().string());
+                    if(response.errorBody() !=null){
+                        //Log.d("sendApiCall onResponse", response.errorBody().string());
+                        String s = response.errorBody().string();
+                        Log.d("dupa", s);
+                    }
                 } catch (IOException e) {}
 
                 if (response.isSuccessful()) {
@@ -143,7 +146,7 @@ public class Query {
         return FriendLocations;
     }
 
-    public static List<FriendLocation> getFriendsLocationWithinRange(String fbtoken,double lng, double lat, int meters, final Activity activity){
+    public static List<FriendLocation> getFriendsLocationWithinRange(String fbtoken, double lng, double lat, int meters, final Activity activity){
 
         Call <FriendsLocationList> query = apiInterface.getFriendsWithinRange(fbtoken, lng, lat, meters);
         query.enqueue(new Callback<FriendsLocationList>() {
@@ -151,8 +154,11 @@ public class Query {
             @Override
             public void onResponse(Call<FriendsLocationList> call, Response<FriendsLocationList> response) {
                 try {
-                    if(response.errorBody() !=null)
-                        Log.d("getMeetings onResponse", response.errorBody().string());
+                    if(response.errorBody() !=null){
+                        //Log.d("FriendsLoc onResponse", response.errorBody().string());
+                    String s = response.errorBody().string();
+                    Log.d("dupa", s);
+                    }
                 } catch (IOException e) {}
 
                 Toast.makeText(activity, "Correct get meetings", Toast.LENGTH_SHORT).show();

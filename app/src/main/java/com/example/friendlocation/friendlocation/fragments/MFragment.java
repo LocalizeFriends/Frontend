@@ -32,6 +32,7 @@ import com.example.friendlocation.friendlocation.JavaClasses.Friend;
 import com.example.friendlocation.friendlocation.JavaClasses.FriendLocation;
 import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
 import com.example.friendlocation.friendlocation.JavaClasses.MeetingAttender;
+import com.example.friendlocation.friendlocation.JavaClasses.MyFirebaseInstanceIDService;
 import com.example.friendlocation.friendlocation.PathDrawing.ReadTask;
 import com.example.friendlocation.friendlocation.R;
 import com.facebook.AccessToken;
@@ -76,7 +77,6 @@ import butterknife.ButterKnife;
     Location mLastLocation;
     GoogleMap mGoogleMap;
     LocationRequest mLocationRequest;
-    SupportMapFragment supportMapFragment;
     static API.APIInterface apiInterface;
     AccessToken token;
     static Marker meetingMarker;
@@ -101,6 +101,12 @@ import butterknife.ButterKnife;
         }
         View view = inflater.inflate(R.layout.fragment_m, container, false);
         ButterKnife.bind(this, view);
+        mGoogleApiClient.connect();
+        apiInterface = API.getClient();
+        token = AccessToken.getCurrentAccessToken();
+        MyFirebaseInstanceIDService s = new MyFirebaseInstanceIDService();
+        s.onTokenRefresh();
+
         find_friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,10 +124,6 @@ import butterknife.ButterKnife;
             }
         });
 
-
-        mGoogleApiClient.connect();
-        apiInterface = API.getClient();
-        token = AccessToken.getCurrentAccessToken();
         return view;
     }
 
@@ -224,7 +226,7 @@ import butterknife.ButterKnife;
                 d.setTimeZone(TimeZone.getTimeZone("UTC"));
                 d.set(Calendar.HOUR_OF_DAY, selectedHour);
                 d.set(Calendar.MINUTE, selectedMinute);
-                meeting.setTimestamp(new Timestamp(d.getTimeInMillis()));
+                meeting.setTimestamp(d.getTimeInMillis());
                 //TODO sprawdzic czy to dziala
                 setAttendees();
             }
