@@ -100,6 +100,32 @@ public class Query {
         });
     }
 
+    public static void sendMessagingAddress(final Activity activity){
+        Call<String> query = apiInterface.sendMessagingAddress(AccessToken.getCurrentAccessToken().getToken(),"",1);
+
+        query.enqueue(new Callback<String>() {
+
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                try {
+                    if(response.errorBody() !=null)
+                        Log.d("sendNotifi onResponse", response.errorBody().string());
+                } catch (IOException e) {}
+
+                if(response.isSuccessful()){
+                    Toast.makeText(activity, "Correct sending notifi to api", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(activity, "Incorrect data code: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(activity, "Incorrect sending notifi to api", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     public static List<Meeting> getMeetingProposals(final Activity activity){
 
         Call<MeetupProposalList> query = apiInterface.getMeetings(AccessToken.getCurrentAccessToken().getToken());
@@ -124,6 +150,16 @@ public class Query {
             }
         });
         return meetingProposals;
+    }
+
+    public static List<Meeting> getMeetingProposalsSync(final Activity activity){
+        Call<MeetupProposalList> query = apiInterface.getMeetings(AccessToken.getCurrentAccessToken().getToken());
+        try {
+            return query.execute().body().getMeetings();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static List<FriendLocation> getFriendsLocation(String fbtoken , final Activity activity){

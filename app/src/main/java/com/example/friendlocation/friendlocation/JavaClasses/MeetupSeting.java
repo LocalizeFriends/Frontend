@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -52,8 +53,10 @@ public class MeetupSeting {
         if(mLastLocation != null) {
             //Draw path
             String url = getMapsApiDirectionsUrl(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), meetingMarker.getPosition());
-            //meeting.setLat(meetingMarker.getPosition().latitude);
-            //meeting.setLat(meetingMarker.getPosition().longitude);
+
+            DecimalFormat df = new DecimalFormat("#.######");
+            meeting.setLng( Double.valueOf(df.format( meetingMarker.getPosition().longitude)));
+            meeting.setLat( Double.valueOf(df.format( meetingMarker.getPosition().latitude)));
 
             ReadTask downloadTask = new ReadTask(mGoogleMap);
             // Start downloading json data from Google Directions API

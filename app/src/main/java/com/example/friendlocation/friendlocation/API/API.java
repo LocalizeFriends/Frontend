@@ -25,7 +25,7 @@ import retrofit2.http.Query;
 public class API {
 
     private static APIInterface apiInterface;
-    private static String url = "http://172.16.42.73:3000";//"https://localizefriends.ct8.pl";
+    private static String url = "http://192.168.1.100:3000";//"http://172.16.42.73:3000";//"https://localizefriends.ct8.pl";
     public static APIInterface getClient() {
         if (apiInterface == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -64,6 +64,11 @@ public class API {
                                          @Field("place_name") String placeName,
                                          @Field("lng") double lng, @Field("lat") double lat,
                                          @Field("invite") String inviteList);
+        @FormUrlEncoded
+        @POST("/api/cloud_messaging_address")
+        Call<String> sendMessagingAddress(@Field("fbtoken") String token,
+                                          @Field("address") String address,
+                                          @Field("expiration_time_ms") long expirationTimeMS);
 
         @GET("/api/meetup_proposals")
         Call<MeetupProposalList> getMeetings(@Query("fbtoken") String fbtoken);
@@ -76,6 +81,7 @@ public class API {
                                                         @Query("lng") double lng,
                                                         @Query("lat") double lat,
                                                         @Query("radius") int meters);
+
     }
 }
 

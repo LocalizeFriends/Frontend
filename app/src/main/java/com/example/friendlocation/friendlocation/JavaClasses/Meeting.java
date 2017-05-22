@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.facebook.AccessToken;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.annotations.SerializedName;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -13,8 +14,11 @@ public class Meeting {
     String user_id;
     String name;
     String place_name;
+    @SerializedName("creation_timestamp_ms")
     long timestamp;
+    @SerializedName("latitude")
     double lat;
+    @SerializedName("longitude")
     double lng;
     List<MeetingAttender> attendersList;
 

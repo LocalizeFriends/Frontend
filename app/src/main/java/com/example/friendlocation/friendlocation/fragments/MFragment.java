@@ -30,6 +30,7 @@ import com.example.friendlocation.friendlocation.Adapters.FriendsListAdapter;
 import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
 import com.example.friendlocation.friendlocation.JavaClasses.Friend;
 import com.example.friendlocation.friendlocation.JavaClasses.FriendLocation;
+import com.example.friendlocation.friendlocation.JavaClasses.MarkersVizualizer;
 import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
 import com.example.friendlocation.friendlocation.JavaClasses.MeetingAttender;
 import com.example.friendlocation.friendlocation.JavaClasses.MeetupProposalList;
@@ -72,7 +73,6 @@ public class MFragment extends Fragment implements
                                             GoogleApiClient.OnConnectionFailedListener
 {
 
-    private ArrayList<MarkerOptions> markers;
     final private int MY_REQUEST_FINE_LOCATION = 124;
     final private int MY_REQUEST_COARSE_LOCATION = 125;
     GoogleApiClient mGoogleApiClient;
@@ -147,6 +147,10 @@ public class MFragment extends Fragment implements
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
 
+        //getMeetings
+        meetupProposalList = checkForMeetings();
+        new MarkersVizualizer(mGoogleMap, meetupProposalList);
+
         //setMeetings()
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -157,7 +161,7 @@ public class MFragment extends Fragment implements
     }
 
     List<Meeting> checkForMeetings(){
-        return Query.getMeetingProposals(getActivity());
+        return  Query.getMeetingProposalsSync(getActivity());
     }
 
     void grantPermission(){
@@ -205,7 +209,7 @@ public class MFragment extends Fragment implements
         grantPermission();
 
         if(mLastLocation!= null) {
-            zoomCamera(17,30);
+            zoomCamera(4,30);
             ApiCall myLocation = new ApiCall(AccessToken.getCurrentAccessToken().getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
             Query.sendApiCall(myLocation, getActivity());
         }
