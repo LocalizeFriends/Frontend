@@ -22,7 +22,24 @@ public class FirebaseBackgroudService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-            sendNotification("data", remoteMessage.getData().get("track"));
+
+            /*
+            switch (remoteMessage.getData().get("type")){
+                case "meetup_proposal_invitation_received":
+                    //get organizer id by ("organizer_id")
+                    //get meetup id by ("meetup_id")
+                    break;
+                case "meetup_proposal_invitation_change":
+                    //get user id by ("user_id")
+                    //get meetup id by ("meetup_id")
+                    //get new status by (new_status)
+                    break;
+                case "meetup_proposal_cancel_change":
+                    //get meetup id by ("meetup_id")
+                    //get new status by (new_status)
+            }
+            */
+            //sendNotification("data", remoteMessage.getData().get("track"));
         }
 
         // Check if message contains a notification payload.

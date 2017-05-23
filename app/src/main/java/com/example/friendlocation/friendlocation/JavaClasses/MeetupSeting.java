@@ -174,4 +174,6 @@ public class MeetupSeting {
         String url = "https://maps.googleapis.com/maps/api/directions/"+output+"?"+parameters;
         return url;
     }
+
+
 }

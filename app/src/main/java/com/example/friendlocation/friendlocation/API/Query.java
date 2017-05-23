@@ -163,7 +163,7 @@ public class Query {
             }
         });
     }
-    
+
     public static List<Meeting> getMeetingProposalsSync(final Activity activity){
         Call<MeetupProposalList> query = apiInterface.getMeetings(AccessToken.getCurrentAccessToken().getToken());
         try {
