@@ -126,32 +126,44 @@ public class Query {
         });
     }
 
-    public static List<Meeting> getMeetingProposals(final Activity activity){
-
-        Call<MeetupProposalList> query = apiInterface.getMeetings(AccessToken.getCurrentAccessToken().getToken());
-        query.enqueue(new Callback<MeetupProposalList>() {
-
+    public static void sendMeetingCancel(int meetingId, final Activity activity){
+        Call<String> query = apiInterface.sendMeetingCancel(AccessToken.getCurrentAccessToken().getToken(), meetingId);
+        query.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<MeetupProposalList> call, Response<MeetupProposalList> response) {
-                try {
-                    if(response.errorBody() !=null)
-                        Log.d("getMeetings onResponse", response.errorBody().string());
-                } catch (IOException e) {}
-
-                Toast.makeText(activity, "Correct get meetings", Toast.LENGTH_SHORT).show();
-                if (response.isSuccessful()){
-                    meetingProposals = response.body().getMeetings();
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(activity, "Correct cancel meeting", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(activity, "Something goes wrong with send cancel", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<MeetupProposalList> call, Throwable t) {
-
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(activity, "Failure on cancel meeting", Toast.LENGTH_SHORT).show();
             }
         });
-        return meetingProposals;
     }
 
+    public static void sendMeetingAccept(int meetingId, final Activity activity){
+        Call<String> query = apiInterface.sendMeetingAccept(AccessToken.getCurrentAccessToken().getToken(), meetingId);
+        query.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(activity, "Correct accept meeting", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(activity, "Something goes wrong with send accept - meeting exist?", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(activity, "Failure on accept meeting- connection problem", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
     public static List<Meeting> getMeetingProposalsSync(final Activity activity){
         Call<MeetupProposalList> query = apiInterface.getMeetings(AccessToken.getCurrentAccessToken().getToken());
         try {

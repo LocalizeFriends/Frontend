@@ -70,6 +70,15 @@ public class API {
                                           @Field("address") String address,
                                           @Field("expiration_time_ms") long expirationTimeMS);
 
+        @FormUrlEncoded
+        @POST("/api/meetup_proposal/{meetup_id}/cancel")
+        Call<String> sendMeetingCancel(@Field("fbtoken") String token, @Path("meetup_id") int id);
+
+        @FormUrlEncoded
+        @POST("/api/meetup_proposal/{meetup_id}/accept")
+        Call<String> sendMeetingAccept(@Field("fbtoken") String token, @Path("meetup_id") int id);
+
+
         @GET("/api/meetup_proposals")
         Call<MeetupProposalList> getMeetings(@Query("fbtoken") String fbtoken);
 
