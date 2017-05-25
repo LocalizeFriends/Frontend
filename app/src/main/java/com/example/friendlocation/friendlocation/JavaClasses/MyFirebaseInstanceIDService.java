@@ -5,6 +5,8 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import retrofit2.http.Query;
+
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
@@ -26,5 +28,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
+        com.example.friendlocation.friendlocation.API.Query.sendMessagingAddress(token);
     }
 }

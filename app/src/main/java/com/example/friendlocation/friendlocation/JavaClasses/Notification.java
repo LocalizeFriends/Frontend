@@ -34,7 +34,7 @@ public class Notification {
         this.organizer_id = Integer.valueOf(map.get("organizer_id"));
         this.user_id = Integer.valueOf(map.get("user_id"));
         this.new_status = Boolean.valueOf(map.get("new_status"));
-        //Change to kotlin it will be better. 
+        //Change to kotlin it will be better.
         //CheckNull // Not implemented
     }
 

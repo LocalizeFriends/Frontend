@@ -33,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        String tokenFb = FirebaseInstanceId.getInstance().getToken();
-        Log.v("token:", tokenFb);
+        //String tokenFb = FirebaseInstanceId.getInstance().getToken();
+        //Log.v("token:", tokenFb);
 
         callbackManager = CallbackManager.Factory.create();
         loginButton.setReadPermissions("public_profile","email", "read_custom_friendlists");

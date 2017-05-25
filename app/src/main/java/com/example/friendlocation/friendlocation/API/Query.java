@@ -100,13 +100,14 @@ public class Query {
         });
     }
 
-    public static void sendMessagingAddress(final Activity activity){
-        Call<String> query = apiInterface.sendMessagingAddress(AccessToken.getCurrentAccessToken().getToken(),"",1);
+    public static void sendMessagingAddress(String firebaseToken){
+        Call<String> query = apiInterface.sendMessagingAddress(AccessToken.getCurrentAccessToken().getToken(),firebaseToken,1541934671);
 
         query.enqueue(new Callback<String>() {
 
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                /*
                 try {
                     if(response.errorBody() !=null)
                         Log.d("sendNotifi onResponse", response.errorBody().string());
@@ -116,18 +117,18 @@ public class Query {
                     Toast.makeText(activity, "Correct sending notifi to api", Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(activity, "Incorrect data code: " + response.code(), Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(activity, "Incorrect sending notifi to api", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(activity, "Incorrect sending notifi to api", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    public static void sendMeetingCancel(int meetingId, final Activity activity){
-        Call<String> query = apiInterface.sendMeetingCancel(AccessToken.getCurrentAccessToken().getToken(), meetingId);
+    public static void sendMeetingCancel(int meetingId, boolean b, final Activity activity){
+        Call<String> query = apiInterface.sendMeetingCancel(AccessToken.getCurrentAccessToken().getToken(), b, meetingId);
         query.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -145,8 +146,8 @@ public class Query {
         });
     }
 
-    public static void sendMeetingAccept(int meetingId, final Activity activity){
-        Call<String> query = apiInterface.sendMeetingAccept(AccessToken.getCurrentAccessToken().getToken(), meetingId);
+    public static void sendMeetingAccept(int meetingId, int b, final Activity activity){
+        Call<String> query = apiInterface.sendMeetingAccept(AccessToken.getCurrentAccessToken().getToken(), b, meetingId);
         query.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -164,14 +165,36 @@ public class Query {
         });
     }
 
+    public static void sendMeetingAccept(int meetingId, int b){
+        Call<String> query = apiInterface.sendMeetingAccept(AccessToken.getCurrentAccessToken().getToken(), b, meetingId);
+        query.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()){
+                   // Toast.makeText(activity, "Correct accept meeting", Toast.LENGTH_SHORT).show();
+                }else{
+                   // Toast.makeText(activity, "Something goes wrong with send accept - meeting exist?", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                //Toast.makeText(activity, "Failure on accept meeting- connection problem", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     public static List<Meeting> getMeetingProposalsSync(final Activity activity){
         Call<MeetupProposalList> query = apiInterface.getMeetings(AccessToken.getCurrentAccessToken().getToken());
+
+        MeetupProposalList meetingList = null;
         try {
-            return query.execute().body().getMeetings();
+            meetingList = query.execute().body(); //TODO error handling.
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("An exception was thrown");
+
         }
-        return null;
+        return meetingList == null ? null : meetingList.getMeetings();
     }
 
     public static List<FriendLocation> getFriendsLocation(String fbtoken , final Activity activity){
@@ -211,7 +234,7 @@ public class Query {
                     if(response.errorBody() !=null){
                         //Log.d("FriendsLoc onResponse", response.errorBody().string());
                     String s = response.errorBody().string();
-                    Log.d("dupa", s);
+                    Log.d("", s);
                     }
                 } catch (IOException e) {}
 

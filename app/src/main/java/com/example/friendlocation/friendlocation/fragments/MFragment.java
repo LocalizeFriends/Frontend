@@ -149,7 +149,8 @@ public class MFragment extends Fragment implements
 
         //getMeetings
         meetupProposalList = checkForMeetings();
-        new MarkersVizualizer(mGoogleMap, meetupProposalList);
+        if(meetupProposalList != null)
+            new MarkersVizualizer(mGoogleMap, meetupProposalList);
 
         //setMeetings()
         mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {

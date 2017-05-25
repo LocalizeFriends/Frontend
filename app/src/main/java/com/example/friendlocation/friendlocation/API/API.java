@@ -25,7 +25,7 @@ import retrofit2.http.Query;
 public class API {
 
     private static APIInterface apiInterface;
-    private static String url = "http://192.168.1.100:3000";//"http://172.16.42.73:3000";//"https://localizefriends.ct8.pl";
+    private static String url = "http://192.168.1.100:3000";//"http://172.16.42.73:3000";//*/"https://localizefriends.ct8.pl";
     public static APIInterface getClient() {
         if (apiInterface == null) {
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
@@ -72,11 +72,11 @@ public class API {
 
         @FormUrlEncoded
         @POST("/api/meetup_proposal/{meetup_id}/cancel")
-        Call<String> sendMeetingCancel(@Field("fbtoken") String token, @Path("meetup_id") int id);
+        Call<String> sendMeetingCancel(@Field("fbtoken") String token, @Field("value") Boolean value, @Path("meetup_id") int id);
 
         @FormUrlEncoded
         @POST("/api/meetup_proposal/{meetup_id}/accept")
-        Call<String> sendMeetingAccept(@Field("fbtoken") String token, @Path("meetup_id") int id);
+        Call<String> sendMeetingAccept(@Field("fbtoken") String token, @Field("value") int value, @Path("meetup_id") int id);
 
 
         @GET("/api/meetup_proposals")

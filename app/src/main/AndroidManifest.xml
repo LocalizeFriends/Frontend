@@ -58,6 +58,14 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
+
+        <receiver android:name=".JavaClasses.NotificationDataReciver" >
+            <intent-filter>
+                <action android:name="android.intent.action.YES_ACTION" />
+                <action android:name="android.intent.action.NO_ACTION"  />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 
