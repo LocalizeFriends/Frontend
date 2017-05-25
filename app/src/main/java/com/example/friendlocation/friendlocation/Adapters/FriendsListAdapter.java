@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.friendlocation.friendlocation.JavaClasses.Friend;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.Friend;
 import com.example.friendlocation.friendlocation.R;
 
 import java.util.List;

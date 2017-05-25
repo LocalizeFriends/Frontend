@@ -1,12 +1,7 @@
 package com.example.friendlocation.friendlocation.Adapters;
 
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
-
-import com.example.friendlocation.friendlocation.JavaClasses.Notification;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.Notification;
 import com.google.firebase.messaging.RemoteMessage;
-
-import java.util.Map;
 
 public class NotificationAdapter {
 

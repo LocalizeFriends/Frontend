@@ -42,7 +42,7 @@
         <meta-data android:name="android.support.VERSION" android:value="25.3.0" />
 
         <service
-            android:name=".JavaClasses.FirebaseBackgroudService"
+            android:name=".FirebaseIntegration.FirebaseBackgroudService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -53,13 +53,13 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
         <service
-            android:name=".JavaClasses.MyFirebaseInstanceIDService">
+            android:name=".FirebaseIntegration.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
 
-        <receiver android:name=".JavaClasses.NotificationDataReciver" >
+        <receiver android:name=".FirebaseIntegration.NotificationDataReciver" >
             <intent-filter>
                 <action android:name="android.intent.action.YES_ACTION" />
                 <action android:name="android.intent.action.NO_ACTION"  />

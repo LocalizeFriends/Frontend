@@ -14,6 +14,9 @@ import android.location.Location;
 
 import com.example.friendlocation.friendlocation.API.Query;
 import com.example.friendlocation.friendlocation.Adapters.FriendsListAdapter;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.Friend;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.Meeting;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.MeetingAttender;
 import com.example.friendlocation.friendlocation.PathDrawing.ReadTask;
 import com.example.friendlocation.friendlocation.R;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,6 +37,7 @@ public class MeetupSeting {
     Marker meetingMarker;
     static Meeting meeting;
     private List<Friend> friendList;
+    boolean processFailed = true;
 
     public MeetupSeting(Activity activity, GoogleMap googleMap, Marker lastMarker, Location lastLocation, LatLng point, List<Friend> friendList){
         currentActivity = activity;
@@ -45,9 +49,11 @@ public class MeetupSeting {
         meetingMarker = setMeetingMarker(point);
         meeting = new Meeting();
         drawDialogs(); // Draw ac -> name -> time -> attendees;
+
         meetingMarker.showInfoWindow();
         drawPath(mLastLocation, meetingMarker);
-    }
+        //TODO find a way to remove bad markers.
+        }
 
     void drawPath(Location mLastLocation, Marker meetingMarker){
         if(mLastLocation != null) {
@@ -140,10 +146,6 @@ public class MeetupSeting {
     }
 
     Marker setMeetingMarker(LatLng point){
-        if(meetingMarker != null){
-            meetingMarker.remove(); //We allow only one marker.
-        }
-
         //Add marker
         MarkerOptions marker = new MarkerOptions().position(
                 new LatLng(point.latitude, point.longitude)).title("");

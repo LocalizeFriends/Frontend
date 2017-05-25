@@ -9,12 +9,12 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
-import com.example.friendlocation.friendlocation.JavaClasses.Friend;
-import com.example.friendlocation.friendlocation.JavaClasses.FriendLocation;
-import com.example.friendlocation.friendlocation.JavaClasses.FriendsLocationList;
-import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
-import com.example.friendlocation.friendlocation.JavaClasses.MeetupProposalList;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.ApiCall;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.Friend;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.FriendLocation;
+import com.example.friendlocation.friendlocation.JavaClasses.ListModels.FriendsLocationList;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.Meeting;
+import com.example.friendlocation.friendlocation.JavaClasses.ListModels.MeetupProposalList;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;

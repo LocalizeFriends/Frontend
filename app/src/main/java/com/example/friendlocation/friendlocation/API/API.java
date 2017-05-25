@@ -1,16 +1,13 @@
 package com.example.friendlocation.friendlocation.API;
 
-import com.example.friendlocation.friendlocation.JavaClasses.ApiCall;
-import com.example.friendlocation.friendlocation.JavaClasses.FriendsLocationList;
-import com.example.friendlocation.friendlocation.JavaClasses.Meeting;
-import com.example.friendlocation.friendlocation.JavaClasses.FriendLocation;
-import com.example.friendlocation.friendlocation.JavaClasses.MeetupProposalList;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.ApiCall;
+import com.example.friendlocation.friendlocation.JavaClasses.ListModels.FriendsLocationList;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.Meeting;
+import com.example.friendlocation.friendlocation.JavaClasses.ListModels.MeetupProposalList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

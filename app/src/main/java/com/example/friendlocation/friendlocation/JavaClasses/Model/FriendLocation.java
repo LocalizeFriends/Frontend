@@ -1,4 +1,4 @@
-package com.example.friendlocation.friendlocation.JavaClasses;
+package com.example.friendlocation.friendlocation.JavaClasses.Model;
 
 
 import com.google.gson.annotations.SerializedName;
@@ -33,11 +33,11 @@ public class FriendLocation {
         this.name = name;
     }
 
-    public com.example.friendlocation.friendlocation.JavaClasses.Location getLocation() {
+    public com.example.friendlocation.friendlocation.JavaClasses.Model.Location getLocation() {
         return Location;
     }
 
-    public void setLocation(com.example.friendlocation.friendlocation.JavaClasses.Location location) {
+    public void setLocation(com.example.friendlocation.friendlocation.JavaClasses.Model.Location location) {
         Location = location;
     }
 }

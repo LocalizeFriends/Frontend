@@ -1,4 +1,4 @@
-package com.example.friendlocation.friendlocation.JavaClasses;
+package com.example.friendlocation.friendlocation.JavaClasses.Model;
 
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;

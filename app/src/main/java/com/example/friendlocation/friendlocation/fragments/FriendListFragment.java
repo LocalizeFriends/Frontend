@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.friendlocation.friendlocation.API.Query;
 import com.example.friendlocation.friendlocation.Adapters.FriendsListAdapter;
-import com.example.friendlocation.friendlocation.JavaClasses.Friend;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.Friend;
 import com.example.friendlocation.friendlocation.R;
 import com.facebook.AccessToken;
 

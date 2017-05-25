@@ -1,12 +1,9 @@
-package com.example.friendlocation.friendlocation.JavaClasses;
-
-import android.text.TextUtils;
+package com.example.friendlocation.friendlocation.JavaClasses.Model;
 
 import com.facebook.AccessToken;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 public class Meeting {

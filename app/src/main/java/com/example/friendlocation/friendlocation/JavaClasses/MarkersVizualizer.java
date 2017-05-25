@@ -1,5 +1,6 @@
 package com.example.friendlocation.friendlocation.JavaClasses;
 
+import com.example.friendlocation.friendlocation.JavaClasses.Model.Meeting;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -24,7 +25,7 @@ public class MarkersVizualizer {
 
         //Add marker
         MarkerOptions marker = new MarkerOptions().position(
-                new LatLng(m.lat, m.lng)).title(m.getName());
+                new LatLng(m.getLat(), m.getLng())).title(m.getName());
         return mGoogleMap.addMarker(marker);
     }
 
