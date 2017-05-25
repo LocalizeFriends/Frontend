@@ -46,4 +46,23 @@ public class Notification {
         return null; // Not implemented
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public int getMeetup_id() {
+        return meetup_id;
+    }
+
+    public int getOrganizer_id() {
+        return organizer_id;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public boolean isNew_status() {
+        return new_status;
+    }
 }
