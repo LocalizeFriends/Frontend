@@ -1,8 +1,13 @@
 package com.example.friendlocation.friendlocation.JavaClasses.Model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ApiCall {
+    @SerializedName("fbtoken")
     String fbtoken;
+    @SerializedName("lng")
     double lng;
+    @SerializedName("lat")
     double lat;
 
     public ApiCall(String token, double longitude, double latitude) {

@@ -47,10 +47,7 @@ public class FirebaseBackgroudService extends FirebaseMessagingService {
                     sendNotification("Meetup status changed.", notification.getMeetup_id() + " was " +
                             (notification.isNew_status()? "accepted": "declined"));
             }
-
-
         }
-
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             String title = remoteMessage.getNotification().getTitle(); //get title
@@ -60,7 +57,6 @@ public class FirebaseBackgroudService extends FirebaseMessagingService {
             Log.d(TAG, "Message Notification Body: " + message);
            // Toast.makeText(getBaseContext(), "Correct get meetings", Toast.LENGTH_SHORT).show();
             //sendNotification(title, message);
-
         }
     }
 

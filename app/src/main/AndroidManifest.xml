@@ -39,7 +39,8 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_api_key2" />
-        <meta-data android:name="android.support.VERSION" android:value="25.3.0" />
+
+        <meta-data android:name="android.support.VERSION" android:value="25.3.1" />
 
         <service
             android:name=".FirebaseIntegration.FirebaseBackgroudService"
@@ -49,6 +50,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -67,7 +69,4 @@
         </receiver>
 
     </application>
-
-
-
 </manifest>

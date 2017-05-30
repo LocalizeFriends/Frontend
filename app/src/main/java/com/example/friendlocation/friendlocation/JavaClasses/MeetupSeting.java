@@ -25,8 +25,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class MeetupSeting {
@@ -60,7 +62,7 @@ public class MeetupSeting {
             //Draw path
             String url = getMapsApiDirectionsUrl(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), meetingMarker.getPosition());
 
-            DecimalFormat df = new DecimalFormat("#.######");
+            DecimalFormat df = new DecimalFormat("#.######", new DecimalFormatSymbols(Locale.US));
             meeting.setLng( Double.valueOf(df.format( meetingMarker.getPosition().longitude)));
             meeting.setLat( Double.valueOf(df.format( meetingMarker.getPosition().latitude)));
 

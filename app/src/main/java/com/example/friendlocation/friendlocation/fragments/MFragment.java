@@ -43,8 +43,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,7 +100,7 @@ public class MFragment extends Fragment implements
             public void onClick(View v) {
                 friendMarkerList.clear();
                 List<FriendLocation> nerbyFriendLocations = Query.getFriendsLocationWithinRange(AccessToken.getCurrentAccessToken().getToken(),
-                        mLastLocation.getLongitude(), mLastLocation.getLatitude(), 1000,
+                        mLastLocation.getLongitude(), mLastLocation.getLatitude(), 10000,
                         getActivity());
 
                 for (FriendLocation f : nerbyFriendLocations){
@@ -195,7 +198,10 @@ public class MFragment extends Fragment implements
 
         if(mLastLocation!= null) {
             zoomCamera(4,30);
-            ApiCall myLocation = new ApiCall(AccessToken.getCurrentAccessToken().getToken(), mLastLocation.getLongitude(), mLastLocation.getLatitude());
+
+            DecimalFormat df = new DecimalFormat("#.######", new DecimalFormatSymbols(Locale.US));
+
+            ApiCall myLocation = new ApiCall(AccessToken.getCurrentAccessToken().getToken(), Double.valueOf(df.format(mLastLocation.getLongitude())),Double.valueOf(df.format(mLastLocation.getLatitude())));
             Query.sendApiCall(myLocation, getActivity());
         }
         /*

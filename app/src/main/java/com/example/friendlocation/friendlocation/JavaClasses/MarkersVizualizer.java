@@ -15,8 +15,10 @@ public class MarkersVizualizer {
 
     public MarkersVizualizer(GoogleMap googleMap, List<Meeting> meetings){
 
-        for (Meeting meet: meetings) {
-            markers.add(setMeetingMarker(meet, googleMap)) ;
+        if(meetings != null){
+            for (Meeting meet: meetings) {
+                markers.add(setMeetingMarker(meet, googleMap)) ;
+            }
         }
 
     }

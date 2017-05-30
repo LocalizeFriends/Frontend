@@ -46,7 +46,7 @@ public class Query {
     static List<FriendLocation> FriendLocationsWithinRange = new ArrayList<>();
 
 
-    public static void sendApiCall(ApiCall myLocation, final Activity activity){
+    public static void  sendApiCall(ApiCall myLocation, final Activity activity){
         Call<ApiCall> query = apiInterface.sendApiCall(myLocation.getFbtoken(), myLocation.getLat(), myLocation.getLng());
         query.enqueue(new Callback<ApiCall>() {
             @Override
@@ -261,7 +261,7 @@ public class Query {
             }
         });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, first_name, last_name, email, gender, birthday, Location, picture.type(large)");
+        parameters.putString("fields", "id, first_name, last_name, email, gender, birthday, Location, picture.type(large), friends");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -273,11 +273,11 @@ public class Query {
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, name, email, picture.type(large)");
+        parameters.putString("fields",/*"context.fields(friends_using_app)" );//*/"id, name, email, user_friends, friends, picture.type(large)");
 
         JSONObject rs = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/" + AccessToken.getCurrentAccessToken().getUserId() +"/friends",
+                /*"/1908151672751269", //*/"/" + AccessToken.getCurrentAccessToken().getUserId() +"/friends",
                 parameters,
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
