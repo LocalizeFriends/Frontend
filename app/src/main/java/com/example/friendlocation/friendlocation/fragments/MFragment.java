@@ -2,6 +2,7 @@ package com.example.friendlocation.friendlocation.fragments;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.database.Observable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,8 +29,10 @@ import com.example.friendlocation.friendlocation.JavaClasses.MeetupSeting;
 import com.example.friendlocation.friendlocation.FirebaseIntegration.MyFirebaseInstanceIDService;
 import com.example.friendlocation.friendlocation.R;
 import com.facebook.AccessToken;
+import com.google.ads.mediation.customevent.CustomEventAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -48,6 +51,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Observer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +61,9 @@ public class MFragment extends Fragment implements
                                             OnMapReadyCallback,
                                             LocationListener,
                                             GoogleApiClient.ConnectionCallbacks,
-                                            GoogleApiClient.OnConnectionFailedListener
+                                            GoogleApiClient.OnConnectionFailedListener,
+                                            Observer
+
 {
 
     final private int MY_REQUEST_FINE_LOCATION = 124;
@@ -69,8 +75,12 @@ public class MFragment extends Fragment implements
     static API.APIInterface apiInterface;
     static Marker meetingMarker;
     private List<Marker> friendMarkerList = new ArrayList<>();
+    private Observable<List<Meeting>> friendss = new Observable<List<Meeting>>() {
+
+    };
     private List<Friend> friendList;
     List<Meeting> meetupProposalList;
+    List<FriendLocation> nerbyFriendLocations;
 
     @BindView(R.id.find_friends) Button find_friends;
 
@@ -95,23 +105,23 @@ public class MFragment extends Fragment implements
         MyFirebaseInstanceIDService s = new MyFirebaseInstanceIDService();
         s.onTokenRefresh();
 
+
+
         find_friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                friendMarkerList.clear();
-                List<FriendLocation> nerbyFriendLocations = Query.getFriendsLocationWithinRange(AccessToken.getCurrentAccessToken().getToken(),
+                nerbyFriendLocations = Query.getFriendsLocationWithinRangeSync(
                         mLastLocation.getLongitude(), mLastLocation.getLatitude(), 10000,
                         getActivity());
-
-                for (FriendLocation f : nerbyFriendLocations){
-                    MarkerOptions friendMarker = new MarkerOptions().position( new LatLng(f.getLocation().getLng(),
-                            f.getLocation().getLat())).title(f.getName()).icon(BitmapDescriptorFactory
-                            .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                    friendMarkerList.add(mGoogleMap.addMarker(friendMarker));
-                }
                 meetupProposalList = checkForMeetings();
+
+                if(nerbyFriendLocations != null)
+                    drawFrienedsInRange(nerbyFriendLocations);
             }
         });
+
+
+
         return view;
     }
 
@@ -137,6 +147,7 @@ public class MFragment extends Fragment implements
         //getMeetings
         meetupProposalList = checkForMeetings();
         if(meetupProposalList != null)
+            friendss.registerObserver(meetupProposalList);
             new MarkersVizualizer(mGoogleMap, meetupProposalList);
 
         //setMeetings()
@@ -146,6 +157,8 @@ public class MFragment extends Fragment implements
             new MeetupSeting(getActivity(),mGoogleMap,meetingMarker,mLastLocation,point,friendList);
             }
         });
+
+
     }
 
     List<Meeting> checkForMeetings(){
@@ -180,7 +193,6 @@ public class MFragment extends Fragment implements
     public void onLocationChanged(Location location) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-
     }
 
     @Override
@@ -210,9 +222,28 @@ public class MFragment extends Fragment implements
         */
     }
 
+    void drawFrienedsInRange(List<FriendLocation> nerbyFriendLocations){
+        if(nerbyFriendLocations != null){
+            for (FriendLocation f : nerbyFriendLocations){
+                MarkerOptions friendMarker = new MarkerOptions().position( new LatLng(f.getLocation().getLat(),
+                        f.getLocation().getLng())).title(f.getName())
+                        .icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                friendMarkerList.add(mGoogleMap.addMarker(friendMarker));
+            }
+
+        }
+
+    }
+
     @Override
     public void onConnectionSuspended(int i) {}
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
+
+    @Override
+    public void update(java.util.Observable o, Object arg) {
+        Toast.makeText(getActivity(), "Failure on accept meeting- connection problem", Toast.LENGTH_SHORT).show();
+    }
 }

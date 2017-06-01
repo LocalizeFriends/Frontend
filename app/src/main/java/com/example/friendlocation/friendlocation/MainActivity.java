@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         //String tokenFb = FirebaseInstanceId.getInstance().getToken();
         //Log.v("token:", tokenFb);
-
+        /*
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "com.example.friendlocation.friendlocation",
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (NoSuchAlgorithmException e) {
 
-        }
+        }*/
 
         callbackManager = CallbackManager.Factory.create();
         loginButton.setReadPermissions("public_profile","email", "read_custom_friendlists", "user_friends");

@@ -27,8 +27,11 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,7 +46,7 @@ public class Query {
     static API.APIInterface apiInterface = API.getClient();
     static List<Meeting> meetingProposals = new ArrayList<Meeting>();
     static List<FriendLocation> FriendLocations = new ArrayList<>();
-    static List<FriendLocation> FriendLocationsWithinRange = new ArrayList<>();
+    static FriendsLocationList FriendLocationsWithinRange;
 
 
     public static void  sendApiCall(ApiCall myLocation, final Activity activity){
@@ -223,24 +226,22 @@ public class Query {
         return FriendLocations;
     }
 
-    public static List<FriendLocation> getFriendsLocationWithinRange(String fbtoken, double lng, double lat, int meters, final Activity activity){
+    public static List<FriendLocation> getFriendsLocationWithinRange(double lng, double lat, int meters, final Activity activity){
 
-        Call <FriendsLocationList> query = apiInterface.getFriendsWithinRange(fbtoken, lng, lat, meters);
+        DecimalFormat df = new DecimalFormat("#.#######", new DecimalFormatSymbols(Locale.US));
+        Call <FriendsLocationList> query = apiInterface.getFriendsWithinRange(
+                AccessToken.getCurrentAccessToken().getToken(),
+                Double.valueOf(df.format( lng)),
+                Double.valueOf(df.format( lat)),
+                meters);
+
         query.enqueue(new Callback<FriendsLocationList>() {
 
             @Override
             public void onResponse(Call<FriendsLocationList> call, Response<FriendsLocationList> response) {
-                try {
-                    if(response.errorBody() !=null){
-                        //Log.d("FriendsLoc onResponse", response.errorBody().string());
-                    String s = response.errorBody().string();
-                    Log.d("", s);
-                    }
-                } catch (IOException e) {}
-
-                Toast.makeText(activity, "Correct get meetings", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Correct get friend in radius", Toast.LENGTH_SHORT).show();
                 if (response.isSuccessful()){
-                    FriendLocationsWithinRange = response.body().getFriendLocations();
+                    FriendLocationsWithinRange = response.body();
                 }
             }
 
@@ -249,8 +250,26 @@ public class Query {
                 Toast.makeText(activity, "Failed to connect backend!", Toast.LENGTH_SHORT).show();
             }
         });
-        return FriendLocationsWithinRange;
+        return FriendLocationsWithinRange == null? null : FriendLocationsWithinRange.getFriendLocations();
     }
+
+    public static List<FriendLocation> getFriendsLocationWithinRangeSync(double lng, double lat, int meters, final Activity activity){
+
+        DecimalFormat df = new DecimalFormat("#.#######", new DecimalFormatSymbols(Locale.US));
+        Call <FriendsLocationList> query = apiInterface.getFriendsWithinRange(
+                AccessToken.getCurrentAccessToken().getToken(),
+                Double.valueOf(df.format( lng)),
+                Double.valueOf(df.format( lat)),
+                meters);
+
+        try {
+            FriendLocationsWithinRange = query.execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return FriendLocationsWithinRange == null? null : FriendLocationsWithinRange.getFriendLocations();
+    }
+
 
     //##################### FacebookApi #####################
     static public void getUserInformation(){

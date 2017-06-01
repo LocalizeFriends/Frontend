@@ -1,14 +1,19 @@
 package com.example.friendlocation.friendlocation.JavaClasses.Model;
 
 
+import com.google.gson.annotations.SerializedName;
+
 import java.sql.Timestamp;
 
 public class Location {
+    @SerializedName("latitude")
     double lat;
+    @SerializedName("longitude")
     double lng;
-    Timestamp timestap;
+    @SerializedName("timestamp_ms")
+    String timestap;
 
-    public Location(double lat, double lng, Timestamp timestap) {
+    public Location(double lat, double lng, String timestap) {
         this.lat = lat;
         this.lng = lng;
         this.timestap = timestap;
@@ -30,11 +35,11 @@ public class Location {
         this.lng = lng;
     }
 
-    public Timestamp getTimestap() {
+    public String getTimestap() {
         return timestap;
     }
 
-    public void setTimestap(Timestamp timestap) {
+    public void setTimestap(String timestap) {
         this.timestap = timestap;
     }
 }

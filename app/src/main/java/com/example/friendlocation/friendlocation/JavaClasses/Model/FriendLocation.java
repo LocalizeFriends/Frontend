@@ -8,13 +8,16 @@ public class FriendLocation {
     String id;
     @SerializedName("name")
     String name;
-    @SerializedName("Location")
+    @SerializedName("location")
     Location Location;
+    @SerializedName("distance")
+    double distance;
 
-    public FriendLocation(String id, String name, Location Location) {
+    public FriendLocation(String id, String name, Location Location, double distance) {
         this.id = id;
         this.name = name;
         this.Location = Location;
+        this.distance = distance;
     }
 
     public String getId() {

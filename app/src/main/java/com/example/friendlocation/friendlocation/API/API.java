@@ -2,12 +2,14 @@ package com.example.friendlocation.friendlocation.API;
 
 import com.example.friendlocation.friendlocation.JavaClasses.Model.ApiCall;
 import com.example.friendlocation.friendlocation.JavaClasses.ListModels.FriendsLocationList;
+import com.example.friendlocation.friendlocation.JavaClasses.Model.FriendLocation;
 import com.example.friendlocation.friendlocation.JavaClasses.Model.Meeting;
 import com.example.friendlocation.friendlocation.JavaClasses.ListModels.MeetupProposalList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -82,11 +84,11 @@ public class API {
         @GET("/api/friends_locations")
         Call<FriendsLocationList> getFriendsLocation(@Query("fbtoken") String fbtoken);
 
-        @GET ("/api/friends_within_range")
+        @GET("/api/friends_within_range")
         Call<FriendsLocationList> getFriendsWithinRange(@Query("fbtoken") String fbtoken,
-                                                        @Query("lng") double lng,
-                                                        @Query("lat") double lat,
-                                                        @Query("radius") int meters);
+                                                         @Query("lng") double lng,
+                                                         @Query("lat") double lat,
+                                                         @Query("radius") int meters);
 
     }
 }
