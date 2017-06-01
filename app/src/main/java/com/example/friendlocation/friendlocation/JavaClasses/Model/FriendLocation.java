@@ -43,4 +43,5 @@ public class FriendLocation {
     public void setLocation(com.example.friendlocation.friendlocation.JavaClasses.Model.Location location) {
         Location = location;
     }
+    
 }
