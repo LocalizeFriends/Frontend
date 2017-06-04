@@ -65,7 +65,7 @@ public class FirebaseBackgroudService extends FirebaseMessagingService {
 
     }
 
-    private void sendNotification(String title,String messageBody, int meetupid) {
+    private void sendNotification(String title,String messageBody, String meetupid) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,

@@ -1,6 +1,9 @@
 package com.example.friendlocation.friendlocation.fragments;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Observable;
 import android.location.Location;
@@ -78,6 +81,7 @@ public class MFragment extends Fragment implements
     private Observable<List<Meeting>> friendss = new Observable<List<Meeting>>() {
 
     };
+    BroadcastReceiver broadcastReceiver;
     private List<Friend> friendList;
     List<Meeting> meetupProposalList;
     List<FriendLocation> nerbyFriendLocations;
@@ -110,6 +114,8 @@ public class MFragment extends Fragment implements
         find_friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(mLastLocation != null){
                 nerbyFriendLocations = Query.getFriendsLocationWithinRangeSync(
                         mLastLocation.getLongitude(), mLastLocation.getLatitude(), 10000,
                         getActivity());
@@ -117,6 +123,9 @@ public class MFragment extends Fragment implements
 
                 if(nerbyFriendLocations != null)
                     drawFrienedsInRange(nerbyFriendLocations);
+                }else{
+                    Toast.makeText(getActivity(), "Please enable your location", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -138,6 +147,7 @@ public class MFragment extends Fragment implements
             fm.executePendingTransactions();
         }
         mapFragment.getMapAsync(this);
+
     }
 
     @Override
@@ -244,6 +254,6 @@ public class MFragment extends Fragment implements
 
     @Override
     public void update(java.util.Observable o, Object arg) {
-        Toast.makeText(getActivity(), "Failure on accept meeting- connection problem", Toast.LENGTH_SHORT).show();
+
     }
 }

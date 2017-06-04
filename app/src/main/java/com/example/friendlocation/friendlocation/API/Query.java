@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -104,27 +105,28 @@ public class Query {
     }
 
     public static void sendMessagingAddress(String firebaseToken){
-        Call<String> query = apiInterface.sendMessagingAddress(AccessToken.getCurrentAccessToken().getToken(),firebaseToken,1541934671);
+        Call<ResponseBody> query = apiInterface.sendMessagingAddress(AccessToken.getCurrentAccessToken().getToken(),firebaseToken,"1541934671");
 
-        query.enqueue(new Callback<String>() {
+        query.enqueue(new Callback<ResponseBody>() {
 
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                /*
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
                 try {
                     if(response.errorBody() !=null)
                         Log.d("sendNotifi onResponse", response.errorBody().string());
                 } catch (IOException e) {}
 
                 if(response.isSuccessful()){
-                    Toast.makeText(activity, "Correct sending notifi to api", Toast.LENGTH_SHORT).show();
+                    Log.d("FirebaseID", "Success");
                 }else{
-                    Toast.makeText(activity, "Incorrect data code: " + response.code(), Toast.LENGTH_SHORT).show();
-                }*/
+                    Log.d("FirebaseID", "Undefined Error");
+                }
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d("FirebaseID", "Error");
                 //Toast.makeText(activity, "Incorrect sending notifi to api", Toast.LENGTH_SHORT).show();
             }
         });

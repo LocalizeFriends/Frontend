@@ -15,6 +15,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -65,9 +66,9 @@ public class API {
                                          @Field("invite") String inviteList);
         @FormUrlEncoded
         @POST("/api/cloud_messaging_address")
-        Call<String> sendMessagingAddress(@Field("fbtoken") String token,
-                                          @Field("address") String address,
-                                          @Field("expiration_time_ms") long expirationTimeMS);
+        Call<ResponseBody> sendMessagingAddress(@Field("fbtoken") String token,
+                                                @Field("address") String address,
+                                                @Field("expiration_time_ms") String expirationTimeMS);
 
         @FormUrlEncoded
         @POST("/api/meetup_proposal/{meetup_id}/cancel")
