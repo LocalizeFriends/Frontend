@@ -4,20 +4,22 @@
     android:layout_height="match_parent"
     tools:context="com.example.friendlocation.friendlocation.fragments.MFragment">
 
+
+
+
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:id="@+id/map_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <Button
-            android:id="@+id/find_friends"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:text="find"/>
-
     </RelativeLayout>
+    <Button
+        android:id="@+id/find_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:text="find"
+        android:translationZ="1000dp"/>
 
 </FrameLayout>
