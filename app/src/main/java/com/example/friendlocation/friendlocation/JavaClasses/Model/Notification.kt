@@ -9,7 +9,7 @@ class Notification {
         internal set
     var user_id: String? = ""
         internal set
-    var isNew_status: Boolean? = false
+    var isNew_status: Boolean = false
         internal set
 
     constructor(type: String, meetup_id: String, organizer_id: String) {

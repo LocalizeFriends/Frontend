@@ -72,11 +72,11 @@ public class API {
 
         @FormUrlEncoded
         @POST("/api/meetup_proposal/{meetup_id}/cancel")
-        Call<String> sendMeetingCancel(@Field("fbtoken") String token, @Field("value") Boolean value, @Path("meetup_id") int id);
+        Call<ResponseBody> sendMeetingCancel(@Field("fbtoken") String token, @Field("value") Boolean value, @Path("meetup_id") int id);
 
         @FormUrlEncoded
         @POST("/api/meetup_proposal/{meetup_id}/accept")
-        Call<String> sendMeetingAccept(@Field("fbtoken") String token, @Field("value") int value, @Path("meetup_id") int id);
+        Call<ResponseBody> sendMeetingAccept(@Field("fbtoken") String token, @Field("value") int value, @Path(value="meetup_id", encoded=true) int id);
 
 
         @GET("/api/meetup_proposals")
