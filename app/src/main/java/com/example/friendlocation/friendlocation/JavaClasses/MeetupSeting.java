@@ -36,10 +36,9 @@ public class MeetupSeting {
     Location mLastLocation;
     GoogleMap mGoogleMap;
     private final Calendar mCurrentTime = Calendar.getInstance();
-    Marker meetingMarker;
+    MarkerOptions meetingMarker;
     static Meeting meeting;
     private List<Friend> friendList;
-    boolean processFailed = true;
 
     public MeetupSeting(Activity activity, GoogleMap googleMap, Marker lastMarker, Location lastLocation, LatLng point, List<Friend> friendList){
         currentActivity = activity;
@@ -47,15 +46,14 @@ public class MeetupSeting {
         mLastLocation = lastLocation;
         this.friendList = friendList;
 
-        meetingMarker = lastMarker;
         meetingMarker = setMeetingMarker(point);
         meeting = new Meeting();
         drawDialogs(); // Draw ac -> name -> time -> attendees;
 
-        meetingMarker.showInfoWindow();
-        drawPath(mLastLocation, meetingMarker);
+        //meetingMarker.showInfoWindow();
+
         //TODO find a way to remove bad markers.
-        }
+    }
 
     void drawPath(Location mLastLocation, Marker meetingMarker){
         if(mLastLocation != null) {
@@ -98,7 +96,7 @@ public class MeetupSeting {
             public void onClick(DialogInterface dialog, int id) {
                 Dialog f = (Dialog) dialog;
                 EditText inputTemp = (EditText) f.findViewById(R.id.MeetingName);
-                meetingMarker.setTitle(inputTemp.getText().toString());
+                meetingMarker.title(inputTemp.getText().toString());
                 meeting.setName(inputTemp.getText().toString());
                 setMeetingTime();
             }
@@ -115,7 +113,7 @@ public class MeetupSeting {
         mTimePicker = new TimePickerDialog(currentActivity, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                meetingMarker.setTitle(meetingMarker.getTitle() + " - " + String.format("%02d:%02d",selectedHour,selectedMinute));
+                meetingMarker.title(meetingMarker.getTitle() + " - " + String.format("%02d:%02d",selectedHour,selectedMinute));
 
                 Calendar d = Calendar.getInstance();
                 d.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -142,16 +140,20 @@ public class MeetupSeting {
                 Toast.makeText(currentActivity, ""+friend.getName(), Toast.LENGTH_SHORT).show();
                 meeting.addAttendeeToList(new MeetingAttender(friend.getUserId(), true));
                 Query.sendMeetupProposal(meeting, currentActivity);
+                Marker m = mGoogleMap.addMarker(new MarkerOptions().position(meetingMarker.getPosition()
+                ).title(meetingMarker.getTitle()));
+                drawPath(mLastLocation, m);
+                //Ta linijka jest glupia -.- -> workaround
             }
         });
         builder.show();
     }
 
-    Marker setMeetingMarker(LatLng point){
+    MarkerOptions setMeetingMarker(LatLng point){
         //Add marker
         MarkerOptions marker = new MarkerOptions().position(
                 new LatLng(point.latitude, point.longitude)).title("");
-        return meetingMarker = mGoogleMap.addMarker(marker);
+        return marker ;//= mGoogleMap.addMarker(marker);
     }
 
     ArrayAdapter<Friend> getPossibleAttendees(){
