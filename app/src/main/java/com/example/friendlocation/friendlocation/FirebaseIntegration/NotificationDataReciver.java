@@ -28,11 +28,15 @@ public class NotificationDataReciver extends BroadcastReceiver {
                 //send yes
                 Query.sendMeetingAccept(id, 1);
 
+
                 break;
             case NO_ACTION :
                 //send no
                 Query.sendMeetingAccept(id, 0);
                 break;
         }
+
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancel(Integer.valueOf(id));
     }
 }
