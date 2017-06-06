@@ -30,6 +30,7 @@ import com.example.friendlocation.friendlocation.JavaClasses.MarkersVizualizer;
 import com.example.friendlocation.friendlocation.JavaClasses.Model.Meeting;
 import com.example.friendlocation.friendlocation.JavaClasses.MeetupSeting;
 import com.example.friendlocation.friendlocation.FirebaseIntegration.MyFirebaseInstanceIDService;
+import com.example.friendlocation.friendlocation.JavaClasses.SimpleXmlPull;
 import com.example.friendlocation.friendlocation.R;
 import com.facebook.AccessToken;
 import com.google.ads.mediation.customevent.CustomEventAdapter;
@@ -139,6 +140,8 @@ public class MFragment extends Fragment implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
+
+        new SimpleXmlPull(getActivity(), mGoogleMap);
 
         //getMeetings
         meetupProposalList = checkForMeetings();
