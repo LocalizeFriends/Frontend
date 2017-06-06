@@ -30,33 +30,16 @@ public class FirebaseBackgroudService extends FirebaseMessagingService {
 
             switch (notification.getType()){
                 case "meetup_proposal_invitation_received":
-                    //get organizer id by ("organizer_id")
-                    //get meetup id by ("meetup_id")
                     sendNotification("Invitation", "Do you want accept meeting", notification.getMeetup_id());
                     break;
                 case "meetup_proposal_invitation_change":
-                    //get user id by ("user_id")
-                    //get meetup id by ("meetup_id")
-                    //get new status by (new_status)
                     sendNotification("Invitation status changed.", notification.getMeetup_id() + " was " +
                             (notification.isNew_status()? "accepted": "declined"));
                     break;
                 case "meetup_proposal_cancel_change":
-                    //get meetup id by ("meetup_id")
-                    //get new status by (new_status)
                     sendNotification("Meetup status changed.", notification.getMeetup_id() + " was " +
                             (notification.isNew_status()? "accepted": "declined"));
             }
-        }
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            String title = remoteMessage.getNotification().getTitle(); //get title
-            String message = remoteMessage.getNotification().getBody(); //get message
-            String data = remoteMessage.getData().get("track");
-            Log.d(TAG, "Message Notification Title: " + title);
-            Log.d(TAG, "Message Notification Body: " + message);
-           // Toast.makeText(getBaseContext(), "Correct get meetings", Toast.LENGTH_SHORT).show();
-            //sendNotification(title, message);
         }
     }
 
