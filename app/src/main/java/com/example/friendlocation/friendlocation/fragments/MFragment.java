@@ -64,11 +64,8 @@ public class MFragment extends Fragment implements
                                             OnMapReadyCallback,
                                             LocationListener,
                                             GoogleApiClient.ConnectionCallbacks,
-                                            GoogleApiClient.OnConnectionFailedListener,
-                                            Observer
-
+                                            GoogleApiClient.OnConnectionFailedListener
 {
-
     final private int MY_REQUEST_FINE_LOCATION = 124;
     final private int MY_REQUEST_COARSE_LOCATION = 125;
     GoogleApiClient mGoogleApiClient;
@@ -78,14 +75,9 @@ public class MFragment extends Fragment implements
     static API.APIInterface apiInterface;
     static Marker meetingMarker;
     private List<Marker> friendMarkerList = new ArrayList<>();
-    private Observable<List<Meeting>> friendss = new Observable<List<Meeting>>() {
-
-    };
-    BroadcastReceiver broadcastReceiver;
     private List<Friend> friendList;
     List<Meeting> meetupProposalList;
     List<FriendLocation> nerbyFriendLocations;
-
     @BindView(R.id.find_friends) Button find_friends;
 
     public MFragment() {
@@ -109,8 +101,6 @@ public class MFragment extends Fragment implements
         MyFirebaseInstanceIDService s = new MyFirebaseInstanceIDService();
         s.onTokenRefresh();
 
-
-
         find_friends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,9 +118,6 @@ public class MFragment extends Fragment implements
                 }
             }
         });
-
-
-
         return view;
     }
 
@@ -147,7 +134,6 @@ public class MFragment extends Fragment implements
             fm.executePendingTransactions();
         }
         mapFragment.getMapAsync(this);
-
     }
 
     @Override
@@ -157,7 +143,6 @@ public class MFragment extends Fragment implements
         //getMeetings
         meetupProposalList = checkForMeetings();
         if(meetupProposalList != null)
-            friendss.registerObserver(meetupProposalList);
             new MarkersVizualizer(mGoogleMap, meetupProposalList);
 
         //setMeetings()
@@ -167,8 +152,6 @@ public class MFragment extends Fragment implements
             new MeetupSeting(getActivity(),mGoogleMap,meetingMarker,mLastLocation,point,friendList);
             }
         });
-
-
     }
 
     List<Meeting> checkForMeetings(){
@@ -252,8 +235,4 @@ public class MFragment extends Fragment implements
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {}
 
-    @Override
-    public void update(java.util.Observable o, Object arg) {
-
-    }
 }
