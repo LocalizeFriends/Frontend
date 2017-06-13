@@ -105,7 +105,7 @@ public class Query {
     }
 
     public static void sendMessagingAddress(String firebaseToken){
-        Call<ResponseBody> query = apiInterface.sendMessagingAddress(AccessToken.getCurrentAccessToken().getToken(),firebaseToken,"1541934671");
+        Call<ResponseBody> query = apiInterface.sendMessagingAddress(AccessToken.getCurrentAccessToken().getToken(),firebaseToken,"1541934671000");
 
         query.enqueue(new Callback<ResponseBody>() {
 
@@ -177,7 +177,7 @@ public class Query {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
                    // Toast.makeText(activity, "Correct accept meeting", Toast.LENGTH_SHORT).show();
-                    Log.d("Meeting send aceptation", response.body().toString());
+                    Log.d("MeetingFragment send aceptation", response.body().toString());
                 }else{
                    // Toast.makeText(activity, "Something goes wrong with send accept - meeting exist?", Toast.LENGTH_SHORT).show();
                 }

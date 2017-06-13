@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.friendlocation.friendlocation.fragments.FriendListFragment;
 import com.example.friendlocation.friendlocation.fragments.MFragment;
+import com.example.friendlocation.friendlocation.fragments.MeetingFragment;
 import com.example.friendlocation.friendlocation.fragments.SettingsFragment;
 
 /**
@@ -29,7 +30,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter { //FragmentState
             case 1:
                 return new FriendListFragment();
             case 2:
+                return new MeetingFragment();
+            case 3:
                 return new SettingsFragment();
+
             default:
                 return new MFragment();
         }
@@ -38,7 +42,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter { //FragmentState
     @Override
     public int getCount() {
         // Show 3 total pages.
-        return 3;
+        return 4;
     }
 
     @Override
@@ -49,6 +53,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter { //FragmentState
             case 1:
                 return "Lista znajomych";
             case 2:
+                return "Lista spotkań";
+            case 3:
                 return "Ustawienia";
         }
         return null;

@@ -13,10 +13,6 @@ import com.example.friendlocation.friendlocation.R;
 
 import java.util.List;
 
-/**
- * Created by barte_000 on 19.03.2017.
- */
-
 public class FriendsListAdapter extends ArrayAdapter<Friend> {
 
     private final List<Friend> list;

@@ -106,11 +106,13 @@ public class MFragment extends Fragment implements
             @Override
             public void onClick(View v) {
 
+
+                meetupProposalList = checkForMeetings();
                 if(mLastLocation != null){
                 nerbyFriendLocations = Query.getFriendsLocationWithinRangeSync(
                         mLastLocation.getLongitude(), mLastLocation.getLatitude(), 10000,
                         getActivity());
-                meetupProposalList = checkForMeetings();
+
 
                 if(nerbyFriendLocations != null)
                     drawFrienedsInRange(nerbyFriendLocations);

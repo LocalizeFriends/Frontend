@@ -7,6 +7,9 @@ import com.google.gson.annotations.SerializedName
 import java.util.ArrayList
 
 class Meeting {
+
+    @SerializedName("id")
+    var id: Int = 0
     var fbtoken: String
     var user_id: String = ""
     internal var name: String = ""
@@ -19,7 +22,8 @@ class Meeting {
     var lng: Double = 0.toDouble()
     internal var attendersList: MutableList<MeetingAttender>? = null
 
-    constructor(user_id: String, name: String, place_name: String, timestap: Long, latLng: LatLng, attendersList: MutableList<MeetingAttender>) {
+    constructor(id:Int, user_id: String, name: String, place_name: String, timestap: Long, latLng: LatLng, attendersList: MutableList<MeetingAttender>) {
+        this.id = id;
         this.fbtoken = AccessToken.getCurrentAccessToken().token
         this.user_id = user_id
         this.name = name

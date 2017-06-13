@@ -31,16 +31,20 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile ('com.google.android.gms:play-services:9.6.0')
-    compile 'com.android.support:mediarouter-v7:25.3.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile ('com.google.firebase:firebase-core:9.6.0'){
+    compile('com.google.firebase:firebase-core:9.6.0') {
         exclude group: 'com.google.android.gms'
     }
-    compile ('com.google.firebase:firebase-messaging:9.6.0')
-    compile ('com.firebase:firebase-jobdispatcher-with-gcm-dep:0.6.0'){
+    compile('com.firebase:firebase-jobdispatcher-with-gcm-dep:0.6.0') {
         exclude module: "play-services-gcm"
     }
+    compile('com.facebook.android:facebook-android-sdk:[4,5]') {
+        exclude group: 'com.google.android.gms'
+    }
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile 'com.google.android.gms:play-services:9.6.0'
+    compile 'com.android.support:mediarouter-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.google.firebase:firebase-messaging:9.6.0'
     compile 'com.android.support:customtabs:25.3.1'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-v4:25.3.1'
@@ -52,12 +56,8 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'com.dmitrymalkovich.android:material-design-dimens:1.4'
-    compile ('com.facebook.android:facebook-android-sdk:[4,5]'){
-        exclude group: 'com.google.android.gms'
-    }
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'
